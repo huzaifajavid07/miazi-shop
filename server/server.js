@@ -70,7 +70,7 @@ if (process.env.NODE_ENV === 'production') {
     const rootPath = process.cwd();
     app.use(express.static(path.join(rootPath, 'client', 'dist')));
 
-    app.get('*', (req, res) =>
+    app.get('/*', (req, res) =>
         res.sendFile(path.resolve(rootPath, 'client', 'dist', 'index.html'))
     );
 } else {
