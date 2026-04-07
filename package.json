@@ -1,0 +1,14 @@
+{
+  "name": "miazi_shop_root",
+  "version": "1.0.0",
+  "description": "E-Commerce Platform",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "cd server && node seeder.js"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
