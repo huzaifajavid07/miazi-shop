@@ -5,10 +5,14 @@ import fs from 'fs';
 
 const router = express.Router();
 
-// Ensure uploads directory exists
+// Ensure uploads directory exists (local development only)
 const uploadsDir = 'uploads';
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
+if (process.env.NODE_ENV !== 'production' && !fs.existsSync(uploadsDir)) {
+    try {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+    } catch (err) {
+        console.warn('Could not create uploads directory:', err.message);
+    }
 }
 
 const storage = multer.diskStorage({
