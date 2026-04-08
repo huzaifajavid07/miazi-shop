@@ -24,7 +24,7 @@ const orderSchema = new mongoose.Schema({
         city: { type: String, required: true },
         postalCode: { type: String, required: true },
         country: { type: String, required: true },
-        phone: { type: String, required: true },
+        phone: { type: String, required: false },
     },
     paymentMethod: {
         type: String,
@@ -71,6 +71,14 @@ const orderSchema = new mongoose.Schema({
     },
     deliveredAt: {
         type: Date,
+    },
+    paymentScreenshot: {
+        type: String,
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['None', 'Pending Approval', 'Verified', 'Rejected'],
+        default: 'None',
     },
     orderStatus: {
         type: String,

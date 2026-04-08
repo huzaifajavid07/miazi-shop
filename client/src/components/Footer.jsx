@@ -17,7 +17,7 @@ const Footer = () => {
 
     return (
         <footer className="w-full font-sans bg-[#f5f5f5] text-[#333e48]">
-            {/* 1. YELLOW NEWSLETTER STRIP */}
+            {/* 1. YELLOW NEWSLETTER STRIP - RESTORED */}
             <div className="bg-[#fed700] py-4">
                 <div className="max-w-[1200px] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -44,7 +44,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* 2. MAIN FOOTER CONTENT */}
+            {/* 2. MAIN FOOTER CONTENT - RESTORED ORIGINAL BRANDING */}
             <div className="max-w-[1200px] mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
                     
@@ -130,7 +130,6 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Back to Top Button */}
                 <button 
                     onClick={scrollToTop}
                     className="absolute right-6 -top-5 bg-[#fed700] p-3 shadow-lg hover:bg-[#333e48] hover:text-white transition-all rounded-sm group"

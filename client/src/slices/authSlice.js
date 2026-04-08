@@ -39,6 +39,18 @@ export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValu
     }
 });
 
+export const googleLogin = createAsyncThunk('auth/googleLogin', async (googleData, { rejectWithValue }) => {
+    try {
+        const response = await api.post('/api/users/google-login', googleData);
+        localStorage.setItem('userInfo', JSON.stringify(response.data));
+        toast.success('Google Login Successful');
+        return response.data;
+    } catch (error) {
+        toast.error(error.response?.data?.message || error.message);
+        return rejectWithValue(error.response?.data?.message || error.message);
+    }
+});
+
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
@@ -83,6 +95,19 @@ const authSlice = createSlice({
             // Logout
             .addCase(logout.fulfilled, (state) => {
                 state.userInfo = null;
+            })
+            // Google Login
+            .addCase(googleLogin.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(googleLogin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userInfo = action.payload;
+            })
+            .addCase(googleLogin.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

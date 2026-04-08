@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import asyncHandler from 'express-async-handler';
 
 // Protect routes -> verifies token and attaches user to req
-const protect = async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
     let token;
 
     // Read the JWT from the 'jwt' cookie
@@ -13,6 +14,10 @@ const protect = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             req.user = await User.findById(decoded.userId).select('-password');
+            if (!req.user) {
+                res.status(401);
+                throw new Error('Not authorized, user not found');
+            }
             next();
         } catch (error) {
             console.error(error);
@@ -23,7 +28,7 @@ const protect = async (req, res, next) => {
         res.status(401);
         throw new Error('Not authorized, no token');
     }
-};
+});
 
 // Admin middleware
 const admin = (req, res, next) => {

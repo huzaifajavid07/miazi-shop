@@ -9,9 +9,9 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/init/:orderId', protect, initPayment);
-router.post('/success', paymentSuccess);
-router.post('/fail', paymentFail);
-router.post('/cancel', paymentCancel);
+router.post('/init', protect, initPayment);
+router.post('/success', paymentSuccess); // Callback from SSLCommerz (Public)
+router.post('/fail', paymentFail);       // Callback from SSLCommerz (Public)
+router.post('/cancel', paymentCancel);   // Callback from SSLCommerz (Public)
 
 export default router;

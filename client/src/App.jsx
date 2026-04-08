@@ -8,8 +8,10 @@ import Footer from './components/Footer';
 
 import HomePage from './pages/HomePage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
+import CategoryPage from './pages/CategoryPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import ShippingPage from './pages/ShippingPage';
 import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
@@ -24,9 +26,11 @@ function App() {
                 <main className="flex-grow">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
+                        <Route path="/category/:slug" element={<CategoryPage />} />
                         <Route path="/product/:id" element={<ProductDetailsPage />} />
                         <Route path="/cart" element={<CartPage />} />
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
                         <Route path="/shipping" element={<ShippingPage />} />
                         <Route path="/placeorder" element={<PlaceOrderPage />} />
                         <Route path="/order/:id" element={<OrderDetailsPage />} />

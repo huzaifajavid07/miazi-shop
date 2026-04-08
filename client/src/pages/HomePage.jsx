@@ -1,26 +1,69 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../slices/productSlice';
-import { addToCart } from '../slices/cartSlice'; // Added import
-import { Link, useLocation } from 'react-router-dom';
+import { addToCart } from '../slices/cartSlice'; 
+import { listCategories } from '../slices/categorySlice';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   ShoppingCart, Search, Menu, ChevronDown, MapPin, 
-  User, Heart, Star, List, ChevronRight, Clock, 
-  Truck, Shield, Headphones, Eye, Plus
+  Smartphone, Laptop, Headphones, Watch, Camera, 
+  Cpu, Zap, Award, ShieldCheck, ChevronLeft, ChevronRight,
+  User, Heart, Star, List, Clock, 
+  Truck, Shield, Headphones as HeadphoneIcon, Eye, Plus, Tag, ArrowRight
 } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
-import { toast } from 'react-toastify'; // Added for feedback
+import { toast } from 'react-toastify'; 
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { products, loading, error } = useSelector((state) => state.product);
+  const { categories } = useSelector((state) => state.category);
+  const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const keyword = query.get('keyword');
+  const category = query.get('category');
+  const isTrending = query.get('isTrending');
+  const isDeals = query.get('isDeals');
   const [activeTab, setActiveTab] = useState('Featured');
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-  
-  const searchParams = new URLSearchParams(location.search);
-  const keyword = searchParams.get('keyword');
-  const category = searchParams.get('category');
+
+  const slides = [
+    {
+      subtitle: "The New Standard",
+      title: "Under Favorable",
+      highlight: "Smartwatches",
+      price: "749",
+      img: "/hero_watch.png",
+      bg: "bg-white"
+    },
+    {
+      subtitle: "Unmatched Performance",
+      title: "Latest Gen",
+      highlight: "Flagship Phones",
+      price: "1,299",
+      img: "/hero_phone.png",
+      bg: "bg-white"
+    },
+    {
+      subtitle: "Professional Grade",
+      title: "Master Your",
+      highlight: "Work Space",
+      price: "2,499",
+      img: "/slider-laptop.png",
+      bg: "bg-white"
+    }
+  ];
+
+  // Auto-play slider
+  useEffect(() => {
+    const slideTimer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(slideTimer);
+  }, [slides.length]);
 
   // Add to Cart Handler
   const addToCartHandler = (product) => {
@@ -46,15 +89,16 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(listProducts({ keyword: keyword || '', category: category || '' }));
-  }, [dispatch, keyword, category]);
+    dispatch(listProducts({ 
+      keyword: keyword || '', 
+      category: category || '', 
+      isTrending: isTrending || '', 
+      isDeals: isDeals || '' 
+    }));
+    dispatch(listCategories());
+  }, [dispatch, keyword, category, isTrending, isDeals, userInfo]);
 
-  const dealBanners = [
-    { title: 'Catch Big Deals on the Cameras', icon: '📷' },
-    { title: 'Catch Big Deals on the Laptops', icon: '💻' },
-    { title: 'Catch Big Deals on the Cameras', icon: '📷' },
-    { title: 'Catch Big Deals on the Headphones', icon: '🎧' }
-  ];
+
 
   const tabs = ['Featured', 'On Sale', 'Top Rated'];
   const bestDealCategories = ['Best Deals', 'TV & Video', 'Cameras', 'Audio', 'Smartphones', 'GPS & Navi', 'Computers', 'Portable Audio', 'Accessories'];
@@ -63,28 +107,55 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-white font-sans">
 
-      {/* HERO SECTION WITH SIDEBAR */}
+      {/* HERO SECTION WITH SLIDER */}
       {!keyword && !category && (
         <section className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Hero Slider */}
-            <div className="flex-1 bg-gray-100 rounded-lg overflow-hidden relative">
-              <div className="flex flex-col md:flex-row items-center min-h-[400px] px-6 md:px-12 py-8 md:py-0">
-                <div className="flex-1 max-w-md text-center md:text-left">
-                  <p className="text-sm text-gray-500 uppercase tracking-widest mb-2">The New Standard</p>
-                  <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-2">
-                    Under Favorable <br />
-                    <span className="font-bold">Smartwatches</span>
-                  </h2>
-                  <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-                    FROM <span className="text-3xl md:text-4xl">$749<sup>99</sup></span>
-                  </p>
-                  <Link to="/?category=smartwatch" className="inline-block bg-yellow-400 text-gray-800 px-8 py-3 rounded-full font-bold text-sm hover:bg-gray-800 hover:text-white transition-all">
-                    Start Buying
-                  </Link>
+            <div className={`flex-1 rounded-3xl overflow-hidden relative min-h-[460px] transition-colors duration-1000 ${slides[currentSlide].bg}`}>
+              {/* Slides Container */}
+              <div className="relative h-full flex items-center transition-all duration-700 ease-in-out">
+                {slides.map((slide, idx) => (
+                  <div key={idx} className={`absolute inset-0 flex flex-col md:flex-row items-center px-8 md:px-16 py-12 md:py-0 transition-all duration-1000 ${currentSlide === idx ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12 pointer-events-none'}`}>
+                    <div className="flex-1 max-w-md text-center md:text-left z-10">
+                      <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-2 animate-in slide-in-from-bottom-2 duration-500">{slide.subtitle}</p>
+                      <h2 className="text-3xl md:text-5xl font-light text-gray-800 mb-2 leading-tight">
+                        {slide.title} <br />
+                        <span className="font-bold text-gray-900 underline decoration-yellow-400 decoration-4 underline-offset-8">{slide.highlight}</span>
+                      </h2>
+                      <div className="flex items-baseline gap-2 mb-8 justify-center md:justify-start">
+                        <p className="text-2xl font-black text-gray-800 uppercase tracking-tighter">FROM ৳{slide.price}<sup className="text-sm ml-0.5">.99</sup></p>
+                      </div>
+                      <button className="bg-yellow-400 text-gray-800 font-bold px-10 py-4 rounded-full hover:bg-gray-800 hover:text-white transition-all shadow-xl shadow-yellow-100">
+                        Discovery Now
+                      </button>
+                    </div>
+                    <div className="flex-1 flex justify-center py-8 relative group">
+                      <img 
+                        src={slide.img} 
+                        alt={slide.highlight} 
+                        className="max-w-full h-[320px] object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 animate-in zoom-in-95 duration-700 pointer-events-none" 
+                      />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-80 h-80 bg-slate-50 rounded-full blur-[120px] opacity-40"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Slider Controls */}
+              <div className="absolute bottom-10 left-8 md:left-16 flex items-center gap-4 z-20">
+                <div className="flex gap-2">
+                  {slides.map((_, idx) => (
+                    <button 
+                      key={idx} 
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${currentSlide === idx ? 'w-8 bg-slate-900' : 'w-2 bg-slate-400/30'}`}
+                    />
+                  ))}
                 </div>
-                <div className="flex-1 flex justify-center mt-8 md:mt-0">
-                  <img src="/hero_watch.png" alt="Smartwatch" className="max-h-[250px] md:max-h-[350px] object-contain drop-shadow-2xl" onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'} />
+                <div className="flex gap-1 ml-4 border-l border-slate-300/30 pl-4">
+                  <button onClick={() => setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length)} className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-white hover:text-slate-900 transition-all border border-transparent hover:border-slate-100 shadow-sm"><ChevronLeft size={16} /></button>
+                  <button onClick={() => setCurrentSlide(prev => (prev + 1) % slides.length)} className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-white hover:text-slate-900 transition-all border border-transparent hover:border-slate-100 shadow-sm"><ChevronRight size={16} /></button>
                 </div>
               </div>
             </div>
@@ -92,23 +163,22 @@ const HomePage = () => {
         </section>
       )}
 
-      {/* DEAL BANNERS */}
-      {!keyword && !category && (
+      {/* CATEGORY BANNERS */}
+      {!keyword && !category && categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 pb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {dealBanners.map((deal, idx) => (
-              <div key={idx} className="bg-gray-100 rounded-lg p-4 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center text-3xl shadow-sm flex-shrink-0">
-                  {deal.icon}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {categories.slice(0, 4).map((cat) => (
+              <Link key={cat._id} to={`/category/${cat._id}`} className="group bg-white border border-gray-200 rounded-lg p-5 flex items-center gap-4 hover:border-yellow-400 hover:shadow-md transition-all">
+                <div className="w-11 h-11 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-yellow-50 transition-colors">
+                  <Tag size={18} className="text-gray-400 group-hover:text-yellow-500 transition-colors" />
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-bold uppercase mb-1">Catch Big</p>
-                  <p className="text-sm font-bold text-gray-800 leading-tight">{deal.title}</p>
-                  <Link to="/deals" className="text-xs text-yellow-600 font-bold flex items-center gap-1 mt-1 hover:underline">
-                    Shop now <ChevronRight className="w-3 h-3" />
-                  </Link>
+                <div className="min-w-0">
+                  <p className="text-[11px] md:text-sm font-black text-slate-800 line-clamp-2 leading-tight uppercase tracking-tight">{cat.name}</p>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase flex items-center gap-1 mt-0.5 group-hover:text-yellow-600 transition-colors">
+                    Shop now <ArrowRight size={10} />
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -177,6 +247,7 @@ const HomePage = () => {
                   <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
                     <div className="relative bg-gray-50 p-4 aspect-square">
                       <img src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/300x300'} alt={p.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" />
+                      
                       {/* ADD TO CART BUTTON */}
                       <button 
                         onClick={() => addToCartHandler(p)}
@@ -220,6 +291,7 @@ const HomePage = () => {
               <div key={p._id} className="group">
                 <div className="bg-gray-50 rounded-lg p-3 mb-2 aspect-square overflow-hidden relative">
                   <img src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/200x200'} alt={p.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" />
+                  
                   {/* MINI ADD TO CART BUTTON */}
                   <button 
                     onClick={() => addToCartHandler(p)}

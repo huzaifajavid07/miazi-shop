@@ -3,10 +3,10 @@ import api from '../utils/axiosConfig';
 
 export const listProducts = createAsyncThunk(
     'product/list',
-    async ({ keyword = '', pageNumber = '', category = '' } = {}, { rejectWithValue }) => {
+    async ({ keyword = '', pageNumber = '', category = '', isTrending = '', isDeals = '' } = {}, { rejectWithValue }) => {
         try {
             const { data } = await api.get(
-                `/api/products?keyword=${keyword}&pageNumber=${pageNumber}&category=${category}`
+                `/api/products?keyword=${keyword}&pageNumber=${pageNumber}&category=${category}&isTrending=${isTrending}&isDeals=${isDeals}`
             );
             return data;
         } catch (error) {
@@ -21,6 +21,42 @@ export const getProductDetails = createAsyncThunk(
         try {
             const { data } = await api.get(`/api/products/${id}`);
             return data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
+export const createProduct = createAsyncThunk(
+    'product/create',
+    async (productData, { rejectWithValue }) => {
+        try {
+            const { data } = await api.post('/api/products', productData);
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
+export const updateProduct = createAsyncThunk(
+    'product/update',
+    async ({ id, ...productData }, { rejectWithValue }) => {
+        try {
+            const { data } = await api.put(`/api/products/${id}`, productData);
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
+export const deleteProduct = createAsyncThunk(
+    'product/delete',
+    async (id, { rejectWithValue }) => {
+        try {
+            await api.delete(`/api/products/${id}`);
+            return id;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -69,6 +105,24 @@ const productSlice = createSlice({
             .addCase(getProductDetails.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            // Create Product
+            .addCase(createProduct.fulfilled, (state, action) => {
+                state.products.unshift(action.payload);
+            })
+            // Update Product
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                const index = state.products.findIndex(p => p._id === action.payload._id);
+                if (index !== -1) {
+                    state.products[index] = action.payload;
+                }
+                if (state.productDetails?._id === action.payload._id) {
+                    state.productDetails = action.payload;
+                }
+            })
+            // Delete Product
+            .addCase(deleteProduct.fulfilled, (state, action) => {
+                state.products = state.products.filter(p => p._id !== action.payload);
             });
     },
 });

@@ -53,118 +53,124 @@ const OrderDetailsPage = () => {
 
     return (
         <div className="bg-electro-bg min-h-screen pb-32">
-            {/* BREADCRUMB */}
-            <div className="border-b border-gray-200 bg-white shadow-sm mb-12">
-                <div className="container-custom py-4 flex items-center gap-2 text-sm text-gray-500">
-                    <Link to="/" className="hover:text-electro-blue transition-colors">Home</Link>
-                    <ChevronRight size={14} />
-                    <Link to="/myorders" className="hover:text-electro-blue transition-colors">My Orders</Link>
-                    <ChevronRight size={14} />
-                    <span className="text-electro-dark font-bold">Order #{order._id.slice(-8).toUpperCase()}</span>
+            <div className="bg-white border-b border-gray-100 shadow-sm mb-16">
+                <div className="container-custom py-5 flex items-center gap-3 text-[10px] md:text-sm text-gray-400">
+                    <Link to="/" className="hover:text-electro-blue transition-colors uppercase font-black tracking-widest leading-none">Catalog</Link>
+                    <ChevronRight size={14} className="opacity-30" />
+                    <Link to="/myorders" className="hover:text-electro-blue transition-colors uppercase font-black tracking-widest leading-none">Deployment History</Link>
+                    <ChevronRight size={14} className="opacity-30" />
+                    <span className="text-electro-dark font-black uppercase tracking-widest border-b-2 border-electro-yellow leading-none">Registry Snapshot</span>
                 </div>
             </div>
 
             <div className="container-custom">
-                {/* STATUS BAR OVERWRITE */}
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 mb-10 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-2 h-full bg-electro-yellow"></div>
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-electro-dark shadow-inner border border-gray-100 italic">
-                           <Package size={32} />
+                {/* STATUS BAR - TECHNICAL OVERWRITE */}
+                <div className="bg-white border border-gray-100 rounded-[2rem] shadow-2xl p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-10 overflow-hidden relative group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-electro-yellow shadow-[0_0_20px_#fed700]"></div>
+                    <div className="flex items-center gap-8 relative z-10">
+                        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-electro-dark shadow-inner border border-gray-100 group-hover:bg-electro-yellow transition-colors duration-700">
+                           <Package size={36} className="group-hover:scale-110 transition-transform duration-700" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Order Identifier</p>
-                            <h1 className="text-2xl md:text-3xl font-bold text-electro-dark tracking-tighter">#{order._id.toUpperCase()}</h1>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-2">Registry Identifier</p>
+                            <h1 className="text-3xl md:text-4xl font-black text-electro-dark tracking-tighter uppercase font-display italic">#{order._id.toUpperCase()}</h1>
                         </div>
                     </div>
                     
-                    <div className="flex flex-wrap gap-4 items-center">
-                        <div className={`px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest flex items-center gap-2 border-2 ${order.isPaid ? 'bg-green-50 border-green-100 text-green-600' : 'bg-red-50 border-red-100 text-red-600'}`}>
-                            {order.isPaid ? <CheckCircle2 size={14} /> : <Clock size={14} />}
-                            {order.isPaid ? `Payment Received: ${new Date(order.paidAt).toLocaleDateString()}` : 'Payment Pending'}
+                    <div className="flex flex-wrap gap-5 items-center relative z-10">
+                        <div className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 border-2 transition-all duration-700 ${order.isPaid ? 'bg-green-50 border-green-100 text-green-600 shadow-lg shadow-green-100/50' : 'bg-red-50 border-red-100 text-red-600 animate-pulse'}`}>
+                            {order.isPaid ? <CheckCircle2 size={16} /> : <Clock size={16} />}
+                            {order.isPaid ? `Payment Authorized: ${new Date(order.paidAt).toLocaleDateString()}` : 'Payment Verification Pending'}
                         </div>
-                        <div className={`px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest flex items-center gap-2 border-2 ${order.isDelivered ? 'bg-blue-50 border-blue-100 text-electro-blue' : 'bg-yellow-50 border-yellow-100 text-electro-dark'}`}>
-                           <Truck size={14} />
-                           {order.isDelivered ? `Delivered: ${new Date(order.deliveredAt).toLocaleDateString()}` : 'In Logistics Pipeline'}
+                        <div className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 border-2 transition-all duration-700 ${order.isDelivered ? 'bg-blue-50 border-blue-100 text-electro-blue shadow-lg shadow-blue-100/50' : 'bg-yellow-50 border-yellow-100 text-electro-dark shadow-lg shadow-yellow-100/20'}`}>
+                           <Truck size={16} className={!order.isDelivered ? 'animate-bounce' : ''} />
+                           {order.isDelivered ? `Decommissioned: ${new Date(order.deliveredAt).toLocaleDateString()}` : 'In Deployment Pipeline'}
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
                     
-                    {/* LEFT SIDE: DETAILS */}
-                    <div className="lg:col-span-8 space-y-10">
+                    {/* LEFT SIDE: DETAILS COMMAND */}
+                    <div className="lg:col-span-8 space-y-12">
                         
-                        {/* CUSTOMER INFO LEDGER */}
-                        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-                            <div className="bg-gray-50/50 px-8 py-5 border-b border-gray-200">
-                                <h2 className="text-lg font-bold text-electro-dark flex items-center gap-3">
-                                   <Receipt size={20} className="text-electro-blue" /> Transaction Particulars
+                        {/* CUSTOMER INFO LEDGER - ELECTRO STYLE */}
+                        <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl overflow-hidden relative">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-electro-blue/5 rounded-bl-full"></div>
+                            
+                            <div className="bg-slate-50 px-10 py-6 border-b border-gray-100">
+                                <h2 className="text-2xl font-black text-electro-dark flex items-center gap-4 uppercase tracking-tighter font-display italic">
+                                   <Receipt size={24} className="text-electro-blue" /> Logistics <span className="text-electro-yellow">Metadata</span>
                                 </h2>
                             </div>
-                            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
-                                <div className="space-y-4">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0"><User size={18} /></div>
+                            <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                                <div className="space-y-6">
+                                    <div className="flex items-start gap-5 group">
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><User size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Recipient</p>
-                                            <p className="text-base font-bold text-electro-dark">{order.user.name} ({order.user.email})</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Authorized Recipient</p>
+                                            <p className="text-lg font-black text-electro-dark font-display">{order.user.name}</p>
+                                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-tight opacity-60">ID: {order.user.email}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0"><MapPin size={18} /></div>
+                                    <div className="flex items-start gap-5 group">
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><MapPin size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global Coordinates</p>
-                                            <p className="text-sm font-bold text-electro-dark leading-relaxed">
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Deployment Coordinates</p>
+                                            <p className="text-base font-black text-electro-dark leading-relaxed italic font-display">
                                                 {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0"><Calendar size={18} /></div>
+                                <div className="space-y-6">
+                                    <div className="flex items-start gap-5 group">
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><Calendar size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Initialization Date</p>
-                                            <p className="text-base font-bold text-electro-dark">{new Date(order.createdAt).toLocaleString()}</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Registry Initialized</p>
+                                            <p className="text-lg font-black text-electro-dark font-display">{new Date(order.createdAt).toLocaleString()}</p>
+                                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1 opacity-40 italic">TIMESTAMP_VERIFIED</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shrink-0"><CreditCard size={18} /></div>
+                                    <div className="flex items-start gap-5 group">
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><CreditCard size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Payment Method</p>
-                                            <p className="text-base font-bold text-electro-dark">{order.paymentMethod}</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Financial Protocol</p>
+                                            <p className="text-lg font-black text-electro-dark font-display">{order.paymentMethod}</p>
+                                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1 opacity-40 italic">SECURE_GATEWAY_AUTH</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* ORDER ITEMS TABLE */}
-                        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
-                            <table className="w-full text-left min-w-[500px]">
+                        {/* ORDER ITEMS TABLE - ELECTRO STYLE */}
+                        <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl overflow-hidden overflow-x-auto">
+                            <table className="w-full text-left min-w-[600px]">
                                 <thead>
-                                    <tr className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-200">
-                                        <th className="py-5 px-8">Unit Deployment</th>
-                                        <th className="py-5 px-8">Unit Price</th>
-                                        <th className="py-5 px-8">Qty</th>
-                                        <th className="py-5 px-8 text-right">Total Credits</th>
+                                    <tr className="bg-slate-50 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] border-b border-gray-100">
+                                        <th className="py-8 px-10 italic">Hardware Registry</th>
+                                        <th className="py-8 px-10 text-center italic">Unit Value</th>
+                                        <th className="py-8 px-10 text-center italic">Deployment Qty</th>
+                                        <th className="py-8 px-10 text-right italic">Registry Subtotal</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-gray-50">
                                     {order.orderItems.map((item, i) => (
-                                        <tr key={i} className="group hover:bg-gray-50/30 transition-colors">
-                                            <td className="py-6 px-8">
-                                                <div className="flex items-center gap-6">
-                                                    <div className="w-16 h-16 bg-white border border-gray-100 rounded-xl p-2 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform duration-500">
-                                                        <img src={item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
+                                        <tr key={i} className="group hover:bg-slate-50/50 transition-all duration-700">
+                                            <td className="py-10 px-10">
+                                                <div className="flex items-center gap-8">
+                                                    <div className="w-20 h-20 bg-white border border-gray-100 rounded-2xl p-3 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-700 relative shadow-sm">
+                                                        <img src={item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-sm" />
                                                     </div>
-                                                    <Link to={`/product/${item.slug}`} className="text-sm font-bold text-electro-dark hover:text-electro-blue transition-colors line-clamp-1">{item.name}</Link>
+                                                    <Link to={`/product/${item.slug}`} className="text-lg font-black text-electro-dark hover:text-electro-blue transition-colors line-clamp-2 uppercase font-display tracking-tight leading-none">{item.name}</Link>
                                                 </div>
                                             </td>
-                                            <td className="py-6 px-8 text-sm font-bold text-gray-500">৳{item.price.toLocaleString()}</td>
-                                            <td className="py-6 px-8 text-sm font-bold text-electro-dark uppercase">x{item.qty}</td>
-                                            <td className="py-6 px-8 text-right font-bold text-electro-dark italic">৳{(item.qty * item.price).toLocaleString()}</td>
+                                            <td className="py-10 px-10 text-center text-sm font-black text-gray-400 font-mono italic">৳{item.price.toLocaleString()}</td>
+                                            <td className="py-10 px-10 text-center">
+                                                <span className="text-xs font-black text-electro-dark bg-electro-yellow/10 border border-electro-yellow/20 px-4 py-1.5 rounded-full uppercase tracking-tighter">[{item.qty} UNITS]</span>
+                                            </td>
+                                            <td className="py-10 px-10 text-right font-black text-electro-dark italic text-xl font-display">৳{(item.qty * item.price).toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -172,47 +178,52 @@ const OrderDetailsPage = () => {
                         </div>
                     </div>
 
-                    {/* RIGHT SIDE: SUMMARY LEDGER */}
-                    <div className="lg:col-span-4 h-fit sticky top-32">
-                        <div className="bg-electro-dark text-white p-8 md:p-12 rounded-2xl shadow-xl overflow-hidden relative group">
-                            {/* Security Decoration */}
-                            <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-1000">
-                               <ShieldCheck size={200} />
-                            </div>
-                            
-                            <h2 className="text-2xl font-bold text-white tracking-tight mb-10 pb-6 border-b border-white/10 uppercase italic flex items-center gap-4">
-                                <Receipt size={24} className="text-electro-yellow" /> Statement
+                    {/* RIGHT SIDE: SUMMARY LEDGER COMMAND */}
+                    <div className="lg:col-span-4 h-fit sticky top-10">
+                        <div className="bg-electro-dark text-white p-10 md:p-14 rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/5 relative group">
+                            {/* Decorative Corner Shadow */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-electro-yellow/5 rounded-bl-full"></div>
+                            <div className="absolute top-0 right-10 w-20 h-1 bg-electro-yellow shadow-[0_0_20px_#fed700] rounded-b-full"></div>
+
+                            <h2 className="text-3xl font-black text-white tracking-tighter mb-12 pb-8 border-b border-white/5 uppercase font-display italic flex items-center gap-5">
+                                <Receipt size={28} className="text-electro-yellow" /> Final <span className="text-electro-yellow">Ledger</span>
                             </h2>
                             
-                            <div className="space-y-6 mb-12">
-                                <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-white/30">
+                            <div className="space-y-8 mb-16">
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
                                     <span>Inventory Value</span>
-                                    <span className="text-white">৳{order.itemsPrice.toLocaleString()}</span>
+                                    <span className="text-white text-sm font-display italic">৳{order.itemsPrice.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-white/30">
-                                    <span>Transport Fee</span>
-                                    <span className="text-white">৳{order.shippingPrice.toLocaleString()}</span>
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
+                                    <span>Logistics Surcharge</span>
+                                    <span className="text-white text-sm font-display italic">৳{order.shippingPrice.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-white/30">
-                                    <span>Global Tax</span>
-                                    <span className="text-white">৳{order.taxPrice.toLocaleString()}</span>
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
+                                    <span>Protocol Tax</span>
+                                    <span className="text-white text-sm font-display italic">৳{order.taxPrice.toLocaleString()}</span>
                                 </div>
-                                <div className="pt-8 border-t border-white/10 flex justify-between items-end">
-                                    <div>
-                                        <p className="text-[10px] font-bold text-electro-yellow uppercase tracking-[0.3em] mb-1">Total Paid</p>
-                                        <p className="text-4xl md:text-5xl font-bold text-white tracking-tighter italic leading-none">৳{order.totalPrice.toLocaleString()}</p>
+                                <div className="pt-10 border-t border-white/5 flex flex-col gap-5">
+                                    <p className="text-[10px] font-black text-electro-blue uppercase tracking-[0.4em]">AUTHORIZED TOTAL DEBIT</p>
+                                    <div className="flex justify-between items-end">
+                                        <p className="text-5xl md:text-6xl font-black text-electro-yellow tracking-tighter italic leading-none shadow-[0_0_30px_rgba(254,215,0,0.15)] font-display">৳{order.totalPrice.toLocaleString()}</p>
+                                        <Zap size={32} className="text-electro-yellow fill-electro-yellow mb-1 animate-pulse" />
                                     </div>
-                                    <Zap size={28} className="text-electro-yellow fill-electro-yellow mb-2 animate-pulse" />
                                 </div>
                             </div>
 
-                            <button onClick={() => window.print()} className="w-full bg-white/10 text-white hover:bg-white hover:text-electro-dark py-4 rounded-full font-bold uppercase tracking-widest text-xs border border-white/20 transition-all duration-300">
-                                Download Invoice PDF
+                            <button onClick={() => window.print()} className="w-full bg-white/5 text-white hover:bg-white hover:text-electro-dark py-6 rounded-full font-black uppercase tracking-[0.2em] text-[10px] border border-white/10 transition-all duration-700 active:scale-95 shadow-xl flex items-center justify-center gap-4 group/print">
+                                <Plus size={18} className="group-hover/print:rotate-90 transition-transform duration-700" /> Print Digital Statement
                             </button>
+                        </div>
+                        
+                        <div className="mt-10 p-8 bg-slate-50 border border-gray-100 rounded-3xl text-center shadow-inner relative overflow-hidden group">
+                           <div className="absolute top-0 left-0 w-1 h-full bg-electro-yellow scale-y-0 group-hover:scale-y-100 transition-transform duration-700"></div>
+                           <p className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-300 leading-relaxed italic group-hover:text-gray-400 transition-colors">Logistics record authorized and verified by MIAZI SHOP Encryption Protocols. This document serves as a verified snapshot of the inventory decommissioning registry.</p>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };

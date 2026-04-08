@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
+import Product from '../models/productModel.js';
+import Category from '../models/categoryModel.js';
 import generateToken from '../utils/generateToken.js';
 
 // @desc    Auth user & get token
@@ -132,27 +134,36 @@ const getUsers = asyncHandler(async (req, res) => {
     res.status(200).json(users);
 });
 
-// @desc    Toggle wishlist item
-// @route   POST /api/users/wishlist
-// @access  Private
-const toggleWishlist = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    const productId = req.body.productId;
+// @desc    Auth user with Google
+// @route   POST /api/users/google-login
+// @access  Public
+const googleAuth = asyncHandler(async (req, res) => {
+    const { name, email, googleId } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+        // Create new user if they don't exist
+        user = await User.create({
+            name,
+            email,
+            password: Math.random().toString(36).slice(-10), // Random password for social login
+            isAdmin: false,
+        });
+    }
 
     if (user) {
-        const alreadyAdded = user.wishlist.find((id) => id.toString() === productId.toString());
+        generateToken(res, user._id);
 
-        if (alreadyAdded) {
-            user.wishlist = user.wishlist.filter((id) => id.toString() !== productId.toString());
-        } else {
-            user.wishlist.push(productId);
-        }
-
-        await user.save();
-        res.status(200).json(user.wishlist);
+        res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+        });
     } else {
-        res.status(404);
-        throw new Error('User not found');
+        res.status(400);
+        throw new Error('Invalid user data');
     }
 });
 
@@ -163,5 +174,5 @@ export {
     getUserProfile,
     updateUserProfile,
     getUsers,
-    toggleWishlist
+    googleAuth
 };

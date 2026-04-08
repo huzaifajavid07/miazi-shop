@@ -48,9 +48,11 @@ router.post('/', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
+    // Normalize Windows backslashes and ensure path starts with /uploads/
+    const imagePath = '/' + req.file.path.replace(/\\/g, '/');
     res.send({
         message: 'Image uploaded successfully',
-        image: `/${req.file.path.replace(/\\\\/g, '/')}`,
+        image: imagePath,
     });
 });
 
