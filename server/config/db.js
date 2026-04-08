@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const connectDB = async () => {
+    if (mongoose.connection.readyState >= 1) {
+        console.log('✅ [DB] Using existing connection');
+        return;
+    }
+
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI, {
             serverSelectionTimeoutMS: 20000,

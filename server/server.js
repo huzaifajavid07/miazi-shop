@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config(); // Initialize early for ESM
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -17,9 +18,8 @@ import notificationRoutes from './routes/notificationRoutes.js';
 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-dotenv.config();
-
 // Connect to MongoDB
+console.log('🚀 [Server] Initializing database connection...');
 connectDB();
 
 const app = express();
