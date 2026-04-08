@@ -62,7 +62,8 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-    const { name, price, discountPrice, description, images, brand, category, countInStock, isFeatured, isTrending } = req.body;
+    const { name, price, discountPrice, description, images, videoUrl, brand, category, countInStock, isFeatured, isTrending } = req.body;
+
 
     const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now();
 
@@ -73,6 +74,7 @@ const createProduct = asyncHandler(async (req, res) => {
         discountPrice: Number(discountPrice) || 0,
         user: req.user._id,
         images: images && images.length > 0 ? images : ['https://via.placeholder.com/400'],
+        videoUrl: videoUrl || '',
         brand,
         category,
         countInStock: Number(countInStock) || 0,
@@ -98,6 +100,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         discountPrice,
         description,
         images,
+        videoUrl,
         brand,
         category,
         countInStock,
@@ -114,6 +117,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         product.discountPrice = discountPrice || product.discountPrice;
         product.description = description || product.description;
         product.images = images || product.images;
+        product.videoUrl = videoUrl !== undefined ? videoUrl : product.videoUrl;
         product.brand = brand || product.brand;
         product.category = category || product.category;
         product.countInStock = countInStock || product.countInStock;

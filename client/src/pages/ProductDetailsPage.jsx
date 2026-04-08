@@ -68,6 +68,7 @@ const ProductDetailsPage = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
                         
                         {/* Images */}
+                        {/* Images & Video */}
                         <div className="space-y-6">
                             <div className="bg-white border border-gray-100 rounded-lg p-8 flex items-center justify-center h-[400px] md:h-[500px]">
                                 <img 
@@ -88,6 +89,24 @@ const ProductDetailsPage = () => {
                                             <img src={img?.startsWith('http') ? img : `${BASE_URL}${img}`} alt="" className="w-full h-full object-contain mix-blend-multiply" />
                                         </button>
                                     ))}
+                                </div>
+                            )}
+
+                            {/* Video Player Section (if exists) */}
+                            {product.videoUrl && (
+                                <div className="mt-10 pt-10 border-t border-gray-100">
+                                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-6 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full" /> Product Experience Video
+                                    </h3>
+                                    <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 bg-gray-950 aspect-video group relative">
+                                        <video 
+                                            src={product.videoUrl} 
+                                            controls 
+                                            className="w-full h-full object-cover"
+                                            poster={product.images?.[0]?.startsWith('http') ? product.images[0] : `${BASE_URL}${product.images?.[0]}`}
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                                    </div>
                                 </div>
                             )}
                         </div>

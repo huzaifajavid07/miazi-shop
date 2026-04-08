@@ -25,6 +25,7 @@ const AdminDashboardPage = () => {
     const [newCategoryName, setNewCategoryName] = useState('');
     const [uploadedImages, setUploadedImages] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const [uploadingVideo, setUploadingVideo] = useState(false);
     
     // Notification Form States
     const [notifData, setNotifData] = useState({ title: '', message: '', type: 'info', link: '' });
@@ -39,7 +40,7 @@ const AdminDashboardPage = () => {
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
-        name: '', price: '', discountPrice: '', category: '', brand: '', countInStock: '', description: '', images: '', isFeatured: false, isTrending: false
+        name: '', price: '', discountPrice: '', category: '', brand: '', countInStock: '', description: '', images: '', videoUrl: '', isFeatured: false, isTrending: false
     });
 
     const { products, loading: productsLoading } = useSelector((state) => state.product);
@@ -142,6 +143,46 @@ const AdminDashboardPage = () => {
             toast.error('Upload failed');
         } finally {
             setUploading(false);
+        }
+    };
+
+    const uploadVideoHandler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formDataVideo = new FormData();
+        formDataVideo.append('video', file);
+        setUploadingVideo(true);
+        try {
+            const { data } = await api.post('/api/upload/video', formDataVideo, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setFormData(prev => ({ ...prev, videoUrl: data.videoUrl }));
+            toast.success('Video uploaded to Cloudinary!');
+        } catch (err) {
+            toast.error('Video upload failed');
+        } finally {
+            setUploadingVideo(false);
+        }
+    };
+
+    const uploadVideoHandler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formDataVideo = new FormData();
+        formDataVideo.append('video', file);
+        setUploadingVideo(true);
+        try {
+            const { data } = await api.post('/api/upload/video', formDataVideo, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setFormData(prev => ({ ...prev, videoUrl: data.videoUrl }));
+            toast.success('Video uploaded to Cloudinary!');
+        } catch (err) {
+            toast.error('Video upload failed');
+        } finally {
+            setUploadingVideo(false);
         }
     };
 
@@ -1019,6 +1060,45 @@ const AdminDashboardPage = () => {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Video Asset Section */}
+                                <div className="md:col-span-2 space-y-2 pt-4">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Product Video (Cloudinary)</label>
+                                    <div className="flex flex-col gap-4">
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                accept="video/*"
+                                                onChange={uploadVideoHandler}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                disabled={uploadingVideo}
+                                            />
+                                            <div className={`w-full h-14 border-2 border-dashed rounded-[1.5rem] flex items-center justify-center gap-3 transition-all ${uploadingVideo ? 'border-yellow-400 bg-yellow-50 animate-pulse' : 'border-slate-200 bg-white hover:border-slate-100 hover:bg-slate-50'}`}>
+                                                {uploadingVideo ? (
+                                                    <Loader size={20} className="animate-spin text-yellow-500" />
+                                                ) : (
+                                                    <Plus size={20} className="text-yellow-500" />
+                                                )}
+                                                <span className="text-xs font-black text-slate-500 uppercase tracking-widest">
+                                                    {uploadingVideo ? 'Uploading...' : 'Link Video from Device'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {formData.videoUrl && (
+                                            <div className="relative rounded-[2rem] overflow-hidden border border-slate-200 bg-slate-900 aspect-video shadow-2xl group/player max-w-sm">
+                                                <video src={formData.videoUrl} controls className="w-full h-full object-cover" />
+                                                <button 
+                                                    type="button"
+                                                    onClick={() => setFormData(prev => ({ ...prev, videoUrl: '' }))}
+                                                    className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl shadow-xl hover:bg-red-600 transition-all scale-0 group-hover/player:scale-100"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
                                 <div className="md:col-span-2 space-y-2">
                                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Detail Specification *</label>
                                     <textarea className="w-full bg-white border border-slate-200 px-4 py-4 rounded-[2rem] outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-medium text-sm h-32 resize-none" 

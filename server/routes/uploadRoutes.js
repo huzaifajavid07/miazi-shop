@@ -1,22 +1,24 @@
 import path from 'path';
 import express from 'express';
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 
 const router = express.Router();
 
-// Ensure uploads directory exists (local development only)
-const uploadsDir = 'uploads';
-if (process.env.NODE_ENV !== 'production' && !fs.existsSync(uploadsDir)) {
-    try {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-    } catch (err) {
-        console.warn('Could not create uploads directory:', err.message);
-    }
-}
+// Cloudinary Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
+// Configure Multer for temporary local storage (before uploading to Cloudinary)
 const storage = multer.diskStorage({
     destination(req, file, cb) {
+        if (!fs.existsSync('uploads')) {
+            fs.mkdirSync('uploads');
+        }
         cb(null, 'uploads/');
     },
     filename(req, file, cb) {
@@ -24,31 +26,13 @@ const storage = multer.diskStorage({
     },
 });
 
-function checkFileType(file, cb) {
-    const filetypes = /jpg|jpeg|png|webp|gif/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+const upload = multer({ storage });
 
-    if (extname && mimetype) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Images only! (jpg, jpeg, png, webp, gif)'));
-    }
-}
-
-const upload = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
-    },
-});
-
+// Image Upload (Local for now, or you can switch to Cloudinary)
 router.post('/', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
-    // Normalize Windows backslashes and ensure path starts with /uploads/
     const imagePath = '/' + req.file.path.replace(/\\/g, '/');
     res.send({
         message: 'Image uploaded successfully',
@@ -56,4 +40,30 @@ router.post('/', upload.single('image'), (req, res) => {
     });
 });
 
+// Cloudinary Video Upload
+router.post('/video', upload.single('video'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No video file uploaded' });
+        }
+
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: 'video',
+            folder: 'products/videos',
+        });
+
+        // Delete local temp file
+        fs.unlinkSync(req.file.path);
+
+        res.send({
+            message: 'Video uploaded successfully',
+            videoUrl: result.secure_url,
+        });
+    } catch (error) {
+        console.error('Cloudinary Error:', error);
+        res.status(500).json({ message: 'Video upload failed', error: error.message });
+    }
+});
+
 export default router;
+

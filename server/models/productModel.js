@@ -72,6 +72,10 @@ const productSchema = new mongoose.Schema({
         type: [String],
         required: true,
     },
+    videoUrl: {
+        type: String,
+        default: '',
+    },
     rating: {
         type: Number,
         required: true,

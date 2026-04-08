@@ -189,43 +189,75 @@ const Header = () => {
                             )}
                         </button>
                         
-                        {/* Dropdown Menu */}
+                        {/* Notification Drawer Overlay */}
                         {isNotifOpen && (
-                            <div className="absolute top-full right-0 w-80 bg-white border border-gray-100 shadow-2xl rounded-2xl z-[100] mt-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="p-4 border-b border-gray-50 bg-gray-50/50 flex items-center justify-between">
-                                    <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Broadcast Center</h5>
-                                    <span className="text-[10px] bg-yellow-400 text-gray-900 px-2 py-0.5 rounded-full font-black">NEW</span>
+                            <div 
+                                className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+                                onClick={() => setIsNotifOpen(false)}
+                            />
+                        )}
+
+                        {/* Notification Drawer */}
+                        <div className={`fixed top-0 right-0 h-full w-[350px] bg-white z-[201] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                            {/* Header */}
+                            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400">
+                                <div>
+                                    <h3 className="text-sm font-black uppercase tracking-widest text-gray-900">Broadcast Center</h3>
+                                    <p className="text-[10px] text-gray-800 font-bold mt-0.5">{notifications.length} Announcements Active</p>
                                 </div>
-                                <div className="max-h-80 overflow-y-auto">
-                                    {notifications.length > 0 ? (
-                                        notifications.map((n) => (
-                                            <div key={n._id} className="p-4 hover:bg-slate-50 border-b border-gray-50 transition-colors last:border-0">
+                                <button 
+                                    onClick={() => setIsNotifOpen(false)}
+                                    className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                                >
+                                    <CloseIcon size={20} className="text-gray-900" />
+                                </button>
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex-1 overflow-y-auto custom-scrollbar">
+                                {notifications.length > 0 ? (
+                                    <div className="divide-y divide-gray-50">
+                                        {notifications.map((n) => (
+                                            <div key={n._id} className="p-6 hover:bg-slate-50 transition-colors group">
                                                 <div className="flex gap-4">
-                                                    <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${n.type === 'warning' ? 'bg-amber-100 text-amber-600' : n.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
-                                                        {n.type === 'warning' ? <AlertTriangle size={14} /> : n.type === 'success' ? <Check size={14} /> : <Info size={14} />}
+                                                    <div className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-sm ${n.type === 'warning' ? 'bg-amber-100 text-amber-600' : n.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                        {n.type === 'warning' ? <AlertTriangle size={18} /> : n.type === 'success' ? <Check size={18} /> : <Info size={18} />}
                                                     </div>
-                                                    <div className="min-w-0">
-                                                        <p className="text-xs font-black text-slate-800 uppercase tracking-tight">{n.title}</p>
-                                                        <p className="text-[10px] text-slate-500 mt-1 leading-relaxed line-clamp-2">{n.message}</p>
-                                                        <p className="text-[8px] text-gray-300 font-bold mt-2 uppercase tracking-widest">{new Date(n.createdAt).toLocaleDateString()}</p>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className={`text-[9px] font-black uppercase tracking-widest ${n.type === 'warning' ? 'text-amber-500' : n.type === 'success' ? 'text-emerald-500' : 'text-blue-500'}`}>{n.type} ALERT</span>
+                                                            <span className="text-[9px] text-gray-400 font-bold">{new Date(n.createdAt).toLocaleDateString()}</span>
+                                                        </div>
+                                                        <h4 className="text-sm font-black text-slate-800 mt-1 uppercase tracking-tight">{n.title}</h4>
+                                                        <p className="text-xs text-slate-500 mt-2 leading-relaxed">{n.message}</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <div className="p-10 text-center opacity-40">
-                                            <Bell size={32} className="mx-auto mb-4 text-slate-200" />
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">System quiet</p>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center p-10 text-center opacity-30">
+                                        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                            <Bell size={40} className="text-slate-300" />
                                         </div>
-                                    )}
-                                </div>
-                                {notifications.length > 0 && (
-                                    <div className="p-3 bg-slate-50 text-center border-t border-gray-50">
-                                        <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-yellow-500 transition-colors">Clear Manifest</button>
+                                        <p className="text-xs font-black uppercase tracking-widest text-slate-400">System is Quiet</p>
+                                        <p className="text-[10px] text-slate-400 mt-2">No new broadcasts at this time.</p>
                                     </div>
                                 )}
                             </div>
-                        )}
+
+                            {/* Footer */}
+                            {notifications.length > 0 && (
+                                <div className="p-4 border-t border-gray-50 bg-slate-50">
+                                    <button 
+                                        onClick={() => setIsNotifOpen(false)}
+                                        className="w-full py-3 bg-gray-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-yellow-500 hover:text-gray-900 transition-all duration-300 shadow-lg shadow-gray-200"
+                                    >
+                                        Dismiss All
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <RefreshCw size={22} className="cursor-pointer hover:text-yellow-500" />
