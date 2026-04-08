@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config(); // Initialize early for ESM
 import cors from 'cors';
@@ -23,6 +24,16 @@ console.log('🚀 [Server] Initializing database connection...');
 connectDB();
 
 const app = express();
+
+// Database connection middleware for Serverless
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 // Middleware
 app.use(express.json({ limit: '50mb' }));
