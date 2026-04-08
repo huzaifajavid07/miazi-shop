@@ -1,7 +1,5 @@
 import express from 'express';
-import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
-import { Readable } from 'stream';
 
 const router = express.Router();
 
@@ -12,75 +10,33 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Use Memory Storage for Serverless environments (Vercel)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-/**
- * Universal Cloudinary Stream Upload logic
- */
-const uploadToCloudinary = (fileBuffer, folder, resourceType = 'auto') => {
-    return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-            { folder, resource_type: resourceType },
-            (error, result) => {
-                if (error) return reject(error);
-                resolve(result);
-            }
-        );
-        Readable.from(fileBuffer).pipe(uploadStream);
-    });
-};
-
-// Image Upload (Migrated to Cloudinary)
-router.post('/', upload.single('image'), async (req, res) => {
+// Secure Signature Generation for Frontend Direct Upload
+router.get('/signature', (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'No image file uploaded' });
-        }
+        const timestamp = Math.round((new Date()).getTime() / 1000);
+        
+        // This folder MUST match where the frontend tells Cloudinary it is uploading to
+        const folder = req.query.folder || 'products/images';
+        
+        const signature = cloudinary.utils.api_sign_request({
+            timestamp: timestamp,
+            folder: folder,
+        }, process.env.CLOUDINARY_API_SECRET);
 
-        console.log('🚀 [Cloudinary] Starting image upload...');
-        const result = await uploadToCloudinary(req.file.buffer, 'products/images', 'image');
-        console.log('✅ [Cloudinary] Image uploaded:', result.secure_url);
-
-        res.send({
-            message: 'Image uploaded successfully',
-            image: result.secure_url,
+        res.json({
+            timestamp,
+            signature,
+            cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+            apiKey: process.env.CLOUDINARY_API_KEY
         });
     } catch (error) {
-        console.error('❌ [Cloudinary] Image Upload Error:', error);
-        res.status(500).json({ 
-            message: 'Image upload failed', 
-            error: error.message,
-            details: error // Sending full error for debugging
-        });
+        console.error('Signature Generation Error:', error);
+        res.status(500).json({ message: 'Failed to generate signature', error: error.message });
     }
 });
 
-// Cloudinary Video Upload
-router.post('/video', upload.single('video'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'No video file uploaded' });
-        }
-
-        console.log('🚀 [Cloudinary] Starting video upload...');
-        const result = await uploadToCloudinary(req.file.buffer, 'products/videos', 'video');
-        console.log('✅ [Cloudinary] Video uploaded:', result.secure_url);
-
-        res.send({
-            message: 'Video uploaded successfully',
-            videoUrl: result.secure_url,
-        });
-    } catch (error) {
-        console.error('❌ [Cloudinary] Video Upload Error:', error);
-        res.status(500).json({ 
-            message: 'Video upload failed', 
-            error: error.message,
-            details: error
-        });
-    }
-});
+// Keep the old routes around just in case someone still hits them but return a polite error or just remove them.
+// Removing them forces frontend to adopt the new method instantly.
 
 export default router;
 

@@ -126,21 +126,43 @@ const AdminDashboardPage = () => {
         setUploadedImages([]);
     };
 
+    const uploadToCloudinaryDirect = async (file, folder) => {
+        // Step 1: Get signature from backend
+        const { data: sigData } = await api.get(`/api/upload/signature?folder=${folder}`);
+        
+        // Step 2: Push directly to Cloudinary bypassing Vercel
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('api_key', sigData.apiKey);
+        formData.append('timestamp', sigData.timestamp);
+        formData.append('signature', sigData.signature);
+        formData.append('folder', folder);
+        
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/auto/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Cloudinary error: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        return data.secure_url;
+    };
+
     const uploadFileHandler = async (e) => {
         const files = Array.from(e.target.files);
         setUploading(true);
         try {
             for (const file of files) {
-                const formDataUpload = new FormData();
-                formDataUpload.append('image', file);
-                const { data } = await api.post('/api/upload', formDataUpload, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-                setUploadedImages(prev => [...prev, data.image]);
+                const secureUrl = await uploadToCloudinaryDirect(file, 'products/images');
+                setUploadedImages(prev => [...prev, secureUrl]);
             }
-            toast.success('Image(s) uploaded!');
+            toast.success('Image(s) uploaded successfully!');
         } catch (err) {
-            toast.error('Upload failed');
+            console.error('Upload Error:', err);
+            toast.error('Image upload failed');
         } finally {
             setUploading(false);
         }
@@ -150,16 +172,13 @@ const AdminDashboardPage = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const formDataVideo = new FormData();
-        formDataVideo.append('video', file);
         setUploadingVideo(true);
         try {
-            const { data } = await api.post('/api/upload/video', formDataVideo, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            setFormData(prev => ({ ...prev, videoUrl: data.videoUrl }));
-            toast.success('Video uploaded to Cloudinary!');
+            const secureUrl = await uploadToCloudinaryDirect(file, 'products/videos');
+            setFormData(prev => ({ ...prev, videoUrl: secureUrl }));
+            toast.success('Video uploaded successfully!');
         } catch (err) {
+            console.error('Video Upload Error:', err);
             toast.error('Video upload failed');
         } finally {
             setUploadingVideo(false);
