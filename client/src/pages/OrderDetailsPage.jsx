@@ -149,10 +149,10 @@ const OrderDetailsPage = () => {
                                                 <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-gray-100 italic">
                                                     <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Verified Receipt Output</p>
                                                     <img 
-                                                        src={order.paymentScreenshot.startsWith('data:image') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`} 
+                                                        src={(order.paymentScreenshot.startsWith('data:image') || order.paymentScreenshot.startsWith('http')) ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`} 
                                                         alt="Receipt" 
                                                         className="max-w-full h-32 object-contain rounded-xl shadow-lg border-2 border-white cursor-zoom-in"
-                                                        onClick={() => window.open(order.paymentScreenshot.startsWith('data:image') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`, '_blank')}
+                                                        onClick={() => window.open((order.paymentScreenshot.startsWith('data:image') || order.paymentScreenshot.startsWith('http')) ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`, '_blank')}
                                                     />
                                                 </div>
                                             )}

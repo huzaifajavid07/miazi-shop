@@ -1,6 +1,14 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import sendEmail from '../utils/emailUtils.js';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Cloudinary Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -21,6 +29,21 @@ const addOrderItems = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('No order items');
     } else {
+        let finalScreenshotUrl = paymentScreenshot || null;
+
+        // If paymentScreenshot is a base64 string, upload to Cloudinary
+        if (paymentScreenshot && paymentScreenshot.startsWith('data:image')) {
+            try {
+                const uploadResponse = await cloudinary.uploader.upload(paymentScreenshot, {
+                    folder: 'manual_payments',
+                });
+                finalScreenshotUrl = uploadResponse.secure_url;
+            } catch (error) {
+                console.error('Cloudinary Upload Error:', error);
+                // Continue without failing the whole order, but ideally it should be saved
+            }
+        }
+
         const order = new Order({
             user: req.user._id,
             orderItems,
@@ -30,7 +53,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
             taxPrice,
             shippingPrice,
             totalPrice,
-            paymentScreenshot: paymentScreenshot || null,
+            paymentScreenshot: finalScreenshotUrl,
             paymentStatus: (paymentMethod === 'Online' || paymentMethod === 'bKash/Nagad Manual') ? 'Pending Approval' : 'None',
         });
 
@@ -87,8 +110,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
                          ${paymentScreenshot ? `
                          <div style="margin-top:20px; text-align:center; background:#f9f9f9; padding:15px; border-radius:10px;">
                              <p style="font-size:11px; font-weight:bold; text-transform:uppercase; color:#999; margin-bottom:10px;">Manual Payment Receipt</p>
-                             <img src="${paymentScreenshot.startsWith('data:image') ? paymentScreenshot : (process.env.BASE_URL + paymentScreenshot)}" style="max-width:100%; width:300px; border:2px solid #ddd; border-radius:5px; margin-top:10px;" />
-                             <p style="font-size:10px; color:#999; margin-top:5px;">(Embedded via Base64/Secure Storage)</p>
+                             <img src="${(paymentScreenshot.startsWith('data:image') || paymentScreenshot.startsWith('http')) ? paymentScreenshot : (process.env.BASE_URL + paymentScreenshot)}" style="max-width:100%; width:300px; border:2px solid #ddd; border-radius:5px; margin-top:10px;" />
+                             <p style="font-size:10px; color:#999; margin-top:5px;">(Persistent Cloud Storage Authorized)</p>
                          </div>` : ''}
                     </div>
                     <div style="background:#333e48;padding:15px;text-align:center;color:#999;font-size:12px;">
