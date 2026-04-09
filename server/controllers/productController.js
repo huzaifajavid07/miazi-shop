@@ -11,10 +11,13 @@ const getProducts = asyncHandler(async (req, res) => {
     const pageSize = 12;
     const page = Number(req.query.pageNumber) || 1;
 
-    const keyword = req.query.keyword
+    // ReDoS protection: Limit keyword length and sanitize
+    const rawKeyword = req.query.keyword ? String(req.query.keyword).slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '';
+
+    const keyword = rawKeyword
         ? {
             name: {
-                $regex: req.query.keyword,
+                $regex: rawKeyword,
                 $options: 'i',
             },
         }
@@ -142,6 +145,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
     if (product) {
         await product.deleteOne();
+        logger.info(`Product ${req.params.id} deleted by Admin: ${req.user.email}`);
         res.json({ message: 'Product removed' });
     } else {
         res.status(404);

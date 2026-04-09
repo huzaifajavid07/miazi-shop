@@ -11,10 +11,12 @@ import {
     deleteOrder
 } from '../controllers/orderController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
+import validateRequest from '../middleware/validateMiddleware.js';
+import { createOrderSchema } from '../utils/validators.js';
 
 const router = express.Router();
 
-router.route('/').post(protect, addOrderItems).get(protect, admin, getOrders);
+router.route('/').post(protect, validateRequest(createOrderSchema), addOrderItems).get(protect, admin, getOrders);
 router.route('/myorders').get(protect, getMyOrders);
 router.route('/:id').get(protect, getOrderById).delete(protect, admin, deleteOrder);
 router.route('/:id/pay').put(protect, updateOrderToPaid);

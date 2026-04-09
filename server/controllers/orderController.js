@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import sendEmail from '../utils/emailUtils.js';
 import { v2 as cloudinary } from 'cloudinary';
+import logger from '../utils/logger.js';
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -39,7 +40,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
                 });
                 finalScreenshotUrl = uploadResponse.secure_url;
             } catch (error) {
-                console.error('Cloudinary Upload Error:', error);
+                logger.error(`Cloudinary Upload Error: ${error.message}`);
                 // Continue without failing the whole order, but ideally it should be saved
             }
         }
@@ -155,7 +156,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
                 html: customerEmailHtml,
             });
         } catch (error) {
-            console.error('Email could not be sent:', error.message);
+            logger.error(`Email could not be sent: ${error.message}`);
         }
 
         res.status(201).json(createdOrder);
@@ -188,6 +189,12 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
 
     if (order) {
+        // IDOR Protection: Only the owner or an admin can mark it as paid
+        if (order.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+             res.status(401);
+             throw new Error('Not authorized to update this order');
+        }
+
         order.isPaid = true;
         order.paidAt = Date.now();
         order.paymentResult = {
@@ -248,6 +255,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
 
     if (order) {
         await order.deleteOne();
+        logger.info(`Order ${req.params.id} deleted by Admin: ${req.user.email}`);
         res.json({ message: 'Order removed' });
     } else {
         res.status(404);
@@ -274,6 +282,7 @@ const approveOrderPayment = asyncHandler(async (req, res) => {
         };
 
         const updatedOrder = await order.save();
+        logger.info(`Manual Payment Approved for Order ${order._id} by Admin: ${req.user.email}`);
 
         // Send Approval Email to Customer
         try {
@@ -324,6 +333,7 @@ const rejectOrderPayment = asyncHandler(async (req, res) => {
         order.paymentStatus = 'Rejected';
         // Optional: Mark as cancelled or keep as pending with rejected status
         const updatedOrder = await order.save();
+        logger.warn(`Manual Payment REJECTED for Order ${order._id} by Admin: ${req.user.email}`);
 
         // Send Rejection Email
         try {

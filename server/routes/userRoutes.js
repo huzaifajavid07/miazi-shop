@@ -12,19 +12,26 @@ import {
     resetPassword
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
-import { registerValidation, loginValidation } from '../middleware/validationMiddleware.js';
+import validateRequest from '../middleware/validateMiddleware.js';
+import { 
+    registerUserSchema, 
+    authUserSchema, 
+    forgotPasswordSchema, 
+    resetPasswordSchema 
+} from '../utils/validators.js';
 
 const router = express.Router();
 
-router.route('/').post(registerValidation, registerUser).get(protect, admin, getUsers);
-router.post('/login', loginValidation, authUser);
+router.route('/').post(validateRequest(registerUserSchema), registerUser).get(protect, admin, getUsers);
+router.post('/login', validateRequest(authUserSchema), authUser);
 router.post('/google-login', googleAuth);
 router.post('/logout', logoutUser);
-router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+router.route('/profile')
+    .get(protect, getUserProfile)
+    .put(protect, updateUserProfile);
 
-// OTP Password Reset Routes
-router.post('/forgot-password', forgotPassword);
+router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);
 router.post('/verify-otp', verifyOTP);
-router.post('/reset-password', resetPassword);
+router.post('/reset-password', validateRequest(resetPasswordSchema), resetPassword);
 
 export default router;
