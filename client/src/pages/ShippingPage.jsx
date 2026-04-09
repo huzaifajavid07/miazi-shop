@@ -17,6 +17,7 @@ const ShippingPage = () => {
     const [lat, setLat] = useState(shippingAddress?.lat || null);
     const [lng, setLng] = useState(shippingAddress?.lng || null);
     const [detecting, setDetecting] = useState(false);
+    const [isResolving, setIsResolving] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -70,9 +71,35 @@ const ShippingPage = () => {
         }
     };
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        dispatch(saveShippingAddress({ address, city, postalCode, country, phone, lat, lng }));
+        
+        let finalLat = lat;
+        let finalLng = lng;
+
+        // "Full Functional" Logic: If coordinates are missing, resolve them from the typed address
+        if (!finalLat || !finalLng) {
+            setIsResolving(true);
+            try {
+                const query = `${address}, ${city}, Bangladesh`.trim();
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bd`);
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    finalLat = parseFloat(data[0].lat);
+                    finalLng = parseFloat(data[0].lon);
+                    toast.success('Address coordinates resolved successfully!');
+                } else {
+                    toast.warning('Could not pinpoint precise distance. Using standard rate.');
+                }
+            } catch (error) {
+                console.error('Geo-Resolution Error:', error);
+            } finally {
+                setIsResolving(false);
+            }
+        }
+
+        dispatch(saveShippingAddress({ address, city, postalCode, country, phone, lat: finalLat, lng: finalLng }));
         navigate('/placeorder');
     };
 
@@ -186,9 +213,17 @@ const ShippingPage = () => {
                                 </div>
                                 <button
                                     type="submit"
-                                    className="btn-electro w-full h-12 uppercase mt-6"
+                                    disabled={isResolving}
+                                    className="btn-electro w-full h-12 uppercase mt-6 flex items-center justify-center gap-2"
                                 >
-                                    Continue to Order Review
+                                    {isResolving ? (
+                                        <>
+                                            <Loader size={18} className="animate-spin" />
+                                            <span>Analyzing Logistics...</span>
+                                        </>
+                                    ) : (
+                                        'Continue to Order Review'
+                                    )}
                                 </button>
                             </form>
                         </div>
