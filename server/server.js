@@ -23,20 +23,13 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Connect to MongoDB
-console.log('🚀 [Server] Initializing database connection...');
+logger.info('🚀 [Server] Initializing database connection...');
 connectDB();
 
 const app = express();
 
-// Database connection middleware for Serverless
-app.use(async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
+// Database connection logic is handled by the top-level call and Vercel's connection pooling.
+// No per-request blocking middleware is required.
 
 // Middleware
 app.use(express.json({ limit: '10mb' })); // Reduced from 50mb for DOS protection

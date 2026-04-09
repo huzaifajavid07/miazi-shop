@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import logger from '../utils/logger.js';
 
 dotenv.config();
 
 const connectDB = async () => {
     if (mongoose.connection.readyState >= 1) {
-        console.log('✅ [DB] Using existing connection');
+        logger.info('✅ [DB] Using existing connection');
         return;
     }
 
@@ -15,7 +16,7 @@ const connectDB = async () => {
             socketTimeoutMS: 45000,
             family: 4, // Use IPv4 for stability on some hosts
         });
-        console.log(`✅ [DB] Connected: ${conn.connection.host}`);
+        logger.info(`✅ [DB] Connected: ${conn.connection.host}`);
         
         // Listen for connection drops
         mongoose.connection.on('error', err => {
