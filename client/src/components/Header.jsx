@@ -7,7 +7,7 @@ import api from '../utils/axiosConfig';
 import {
     ShoppingBag, Search, Menu, User, MapPin,
     Truck, RefreshCw, Heart, ChevronDown, LayoutDashboard,
-    Bell, Check, X as CloseIcon, Info, AlertTriangle
+    Bell, Check, X as CloseIcon, Info, AlertTriangle, ChevronRight
 } from 'lucide-react';
 import { fetchNotifications, resetCount } from '../slices/notificationSlice';
 import { toast } from 'react-toastify';
