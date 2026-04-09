@@ -117,8 +117,23 @@ const Header = () => {
                 </Link>
 
                 {/* Mobile Icons */}
-                <div className="flex items-center gap-3 md:hidden">
-                    <Link to="/cart" className="relative text-gray-800">
+                <div className="flex items-center gap-1 sm:gap-3 md:hidden">
+                    {/* Mobile Notification Bell */}
+                    <div className="relative">
+                        <button 
+                            onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); }}
+                            className="p-2 text-gray-700 hover:text-yellow-500 transition-colors"
+                        >
+                            <Bell size={22} />
+                            {count > 0 && (
+                                <span className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 flex items-center justify-center rounded-full border-2 border-white animate-bounce">
+                                    {count}
+                                </span>
+                            )}
+                        </button>
+                    </div>
+
+                    <Link to="/cart" className="relative p-2 text-gray-800">
                         <ShoppingBag size={24} />
                         {cartItems.length > 0 && (
                             <span className="absolute -top-1 -right-2 bg-yellow-400 text-gray-900 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
@@ -126,6 +141,11 @@ const Header = () => {
                             </span>
                         )}
                     </Link>
+
+                    <Link to={userInfo ? "/profile" : "/login"} className="p-2 text-gray-800 hover:text-yellow-500 transition-colors">
+                        <User size={24} />
+                    </Link>
+
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-800 p-2"><Menu size={24} /></button>
                 </div>
 
@@ -320,15 +340,88 @@ const Header = () => {
 
             {/* MOBILE NAV */}
             {isMobileMenuOpen && (
-                <div className="fixed inset-0 z-[100] md:hidden">
-                    <div className="absolute inset-0 bg-black/50" onClick={() => setIsMobileMenuOpen(false)} />
-                    <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-2xl">
-                        <div className="p-5 border-b border-gray-100 bg-yellow-400 flex justify-between items-center font-bold text-sm">MENU <button onClick={() => setIsMobileMenuOpen(false)}>X</button></div>
-                        <ul className="p-4 space-y-4">
-                            {departments.slice(0, 8).map(dept => (
-                                <li key={dept.id}><Link onClick={() => setIsMobileMenuOpen(false)} to="/" className="text-sm font-medium block">{dept.name}</Link></li>
-                            ))}
-                        </ul>
+                <div className="fixed inset-0 z-[500] md:hidden">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+                    <div className="absolute top-0 left-0 h-full w-80 bg-white shadow-2xl flex flex-col transform transition-transform duration-300">
+                        {/* Mobile Menu Header */}
+                        <div className="p-6 border-b border-gray-100 bg-yellow-400 flex justify-between items-center shrink-0">
+                            <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-900 italic">Navigation Manifest</span>
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                                <CloseIcon size={20} className="text-gray-900" />
+                            </button>
+                        </div>
+
+                        {/* User Account Section Mobile */}
+                        <div className="px-6 py-8 border-b border-gray-50 bg-slate-50/50">
+                            {userInfo ? (
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-slate-900 font-black text-xl shadow-lg shadow-yellow-100">
+                                            {userInfo.email.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Identified Operator</p>
+                                            <p className="text-sm font-black text-slate-800 truncate mt-1">{userInfo.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Link 
+                                            to="/profile" 
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="flex items-center justify-center gap-2 py-3 bg-white border border-gray-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-yellow-400 transition-all"
+                                        >
+                                            <User size={14} /> Profile
+                                        </Link>
+                                        <button 
+                                            onClick={() => { setIsMobileMenuOpen(false); logoutHandler(); }}
+                                            className="flex items-center justify-center gap-2 py-3 bg-white border border-gray-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 transition-all"
+                                        >
+                                            Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Protocol Authorization Required</p>
+                                    <Link 
+                                        to="/login" 
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="w-full h-12 bg-yellow-400 text-gray-900 rounded-xl font-black uppercase text-xs tracking-[0.2em] flex items-center justify-center shadow-lg shadow-yellow-100 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                    >
+                                        Register or Sign in
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Departments List */}
+                        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Inventory Sections</p>
+                            <ul className="space-y-2">
+                                {departments.map(dept => (
+                                    <li key={dept.id || dept.name}>
+                                        <Link 
+                                            onClick={() => setIsMobileMenuOpen(false)} 
+                                            to={dept.id ? `/category/${dept.id}` : '#'} 
+                                            className="flex items-center justify-between p-4 rounded-xl bg-slate-50 hover:bg-yellow-50 hover:text-yellow-600 transition-all text-xs font-bold text-gray-600"
+                                        >
+                                            {dept.name}
+                                            <ChevronRight size={14} className="opacity-30" />
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Mobile Navigation Footer */}
+                        <div className="p-6 border-t border-gray-50 bg-slate-50 flex flex-col gap-3">
+                            <Link to="/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-yellow-500 transition-colors">
+                                <Truck size={14} /> Track Order Protocol
+                            </Link>
+                            <Link to="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-yellow-500 transition-colors">
+                                <Heart size={14} /> Wishlist Archive
+                            </Link>
+                        </div>
                     </div>
                 </div>
             )}
