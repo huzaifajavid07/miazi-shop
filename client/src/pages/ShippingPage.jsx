@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveShippingAddress } from '../slices/cartSlice';
@@ -21,6 +21,13 @@ const ShippingPage = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { userInfo } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login?redirect=/shipping');
+        }
+    }, [userInfo, navigate]);
 
     const detectLocation = async () => {
         setDetecting(true);

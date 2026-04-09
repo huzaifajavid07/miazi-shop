@@ -9,6 +9,7 @@ const CartPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const { userInfo } = useSelector((state) => state.auth);
     const cart = useSelector((state) => state.cart || {});
     const { cartItems = [] } = cart;
 
@@ -21,7 +22,11 @@ const CartPage = () => {
     };
 
     const checkoutHandler = () => {
-        navigate('/login?redirect=/shipping');
+        if (userInfo) {
+            navigate('/shipping');
+        } else {
+            navigate('/login?redirect=/shipping');
+        }
     };
 
     return (
