@@ -28,21 +28,14 @@ connectDB();
 
 const app = express();
 
-// Database connection middleware for Serverless Warm-starts
-app.use(async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
+// Database connection - top-level call handles it
+// connectDB() is already called at line 25
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-// app.use(mongoSanitize()); // Prevent NoSQL Injection - Disabled for Vercel Diagnostics
-// app.use(xss()); // Filter XSS attacks - Disabled for Vercel Diagnostics
+app.use(mongoSanitize()); // Prevent NoSQL Injection
+app.use(xss()); // Filter XSS attacks
 
 app.use(cors({
     origin: [
