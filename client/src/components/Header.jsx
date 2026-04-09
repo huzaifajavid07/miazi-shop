@@ -7,9 +7,10 @@ import api from '../utils/axiosConfig';
 import {
     ShoppingBag, Search, Menu, User, MapPin,
     Truck, RefreshCw, Heart, ChevronDown, LayoutDashboard,
-    Bell, Check, X as CloseIcon, Info, AlertTriangle, ChevronRight
+    Bell, Check, X as CloseIcon, Info, AlertTriangle, ChevronRight,
+    Trash2
 } from 'lucide-react';
-import { fetchNotifications, resetCount } from '../slices/notificationSlice';
+import { fetchNotifications, resetCount, deleteNotification } from '../slices/notificationSlice';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../utils/axiosConfig';
 
@@ -75,6 +76,12 @@ const Header = () => {
         dispatch(logout());
         navigate('/login');
         toast.info('Signed out successfully.');
+    };
+
+    const handleDeleteNotification = (e, id) => {
+        e.stopPropagation();
+        dispatch(deleteNotification(id));
+        toast.success('Notification removed');
     };
 
     const departments = categories.length > 0
@@ -212,15 +219,15 @@ const Header = () => {
                         {/* Notification Drawer Overlay */}
                         {isNotifOpen && (
                             <div 
-                                className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+                                className="fixed inset-0 z-[600] bg-black/50 backdrop-blur-md transition-opacity duration-300"
                                 onClick={() => setIsNotifOpen(false)}
                             />
                         )}
 
                         {/* Notification Drawer */}
-                        <div className={`fixed top-0 right-0 h-full w-[350px] bg-white z-[201] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                        <div className={`fixed top-0 right-0 h-full w-full sm:w-[350px] bg-white z-[601] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                             {/* Header */}
-                            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400">
+                            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0">
                                 <div>
                                     <h3 className="text-sm font-black uppercase tracking-widest text-gray-900">Broadcast Center</h3>
                                     <p className="text-[10px] text-gray-800 font-bold mt-0.5">{notifications.length} Announcements Active</p>
@@ -238,12 +245,12 @@ const Header = () => {
                                 {notifications.length > 0 ? (
                                     <div className="divide-y divide-gray-50">
                                         {notifications.map((n) => (
-                                            <div key={n._id} className="p-6 hover:bg-slate-50 transition-colors group">
+                                            <div key={n._id} className="p-6 hover:bg-slate-50 transition-colors group relative">
                                                 <div className="flex gap-4">
                                                     <div className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-sm ${n.type === 'warning' ? 'bg-amber-100 text-amber-600' : n.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
                                                         {n.type === 'warning' ? <AlertTriangle size={18} /> : n.type === 'success' ? <Check size={18} /> : <Info size={18} />}
                                                     </div>
-                                                    <div className="flex-1 min-w-0">
+                                                    <div className="flex-1 min-w-0 pr-6">
                                                         <div className="flex items-center justify-between">
                                                             <span className={`text-[9px] font-black uppercase tracking-widest ${n.type === 'warning' ? 'text-amber-500' : n.type === 'success' ? 'text-emerald-500' : 'text-blue-500'}`}>{n.type} ALERT</span>
                                                             <span className="text-[9px] text-gray-400 font-bold">{new Date(n.createdAt).toLocaleDateString()}</span>
@@ -252,6 +259,14 @@ const Header = () => {
                                                         <p className="text-xs text-slate-500 mt-2 leading-relaxed">{n.message}</p>
                                                     </div>
                                                 </div>
+                                                {/* Delete Button */}
+                                                <button 
+                                                    onClick={(e) => handleDeleteNotification(e, n._id)}
+                                                    className="absolute top-6 right-6 p-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0"
+                                                    title="Remove Notification"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
