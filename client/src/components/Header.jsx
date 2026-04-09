@@ -21,6 +21,7 @@ const Header = () => {
     const [isDeptOpen, setIsDeptOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -149,9 +150,12 @@ const Header = () => {
                         )}
                     </Link>
 
-                    <Link to={userInfo ? "/profile" : "/login"} className="p-2 text-gray-800 hover:text-yellow-500 transition-colors">
+                    <button 
+                        onClick={() => setIsUserDrawerOpen(true)}
+                        className="p-2 text-gray-800 hover:text-yellow-500 transition-colors"
+                    >
                         <User size={24} />
-                    </Link>
+                    </button>
 
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-800 p-2"><Menu size={24} /></button>
                 </div>
@@ -319,6 +323,138 @@ const Header = () => {
                     </Link>
                 </div>
             </div>
+
+            {/* MOBILE ACCOUNT DRAWER */}
+            {isUserDrawerOpen && (
+                <div className="fixed inset-0 z-[600] md:hidden">
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-md" onClick={() => setIsUserDrawerOpen(false)} />
+                    <div className="absolute top-0 right-0 h-full w-full sm:w-[350px] bg-white z-[601] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col pt-0">
+                        {/* Header */}
+                        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0">
+                            <div>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 italic">Account Center</h3>
+                                <p className="text-[10px] text-gray-800 font-bold mt-0.5">Authorized Operating Portal</p>
+                            </div>
+                            <button 
+                                onClick={() => setIsUserDrawerOpen(false)}
+                                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                            >
+                                <CloseIcon size={20} className="text-gray-900" />
+                            </button>
+                        </div>
+
+                        {/* User Identity Section */}
+                        <div className="p-8 border-b border-gray-50 bg-slate-50/50">
+                            {userInfo ? (
+                                <div className="space-y-6 text-center">
+                                    <div className="w-20 h-20 bg-yellow-400 rounded-[2.5rem] flex items-center justify-center text-slate-900 font-black text-3xl mx-auto shadow-2xl shadow-yellow-100 border-4 border-white rotate-3 group-hover:rotate-0 transition-transform">
+                                        {userInfo.email.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-none mb-2">Identification Code</p>
+                                        <p className="text-sm font-black text-slate-800 truncate px-4">{userInfo.email}</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center space-y-4">
+                                    <div className="w-20 h-20 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto border-4 border-dashed border-gray-200">
+                                        <User size={32} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Status: Unauthenticated</p>
+                                        <p className="text-xs text-gray-500">Please sign in to access secure protocols.</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Action Links */}
+                        <div className="flex-1 overflow-y-auto px-6 py-8 custom-scrollbar">
+                            {userInfo ? (
+                                <div className="grid grid-cols-1 gap-3">
+                                    <Link 
+                                        to="/profile" 
+                                        onClick={() => setIsUserDrawerOpen(false)}
+                                        className="flex items-center justify-between p-5 bg-slate-50 border border-gray-100 rounded-2xl hover:bg-yellow-50 hover:border-yellow-200 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-white rounded-xl text-slate-400 group-hover:text-yellow-500 group-hover:scale-110 transition-all">
+                                                <User size={20} />
+                                            </div>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-700">Account Profile</span>
+                                        </div>
+                                        <ChevronRight size={16} className="text-slate-300" />
+                                    </Link>
+
+                                    <Link 
+                                        to="/my-orders" 
+                                        onClick={() => setIsUserDrawerOpen(false)}
+                                        className="flex items-center justify-between p-5 bg-slate-50 border border-gray-100 rounded-2xl hover:bg-yellow-50 hover:border-yellow-200 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-white rounded-xl text-slate-400 group-hover:text-yellow-500 group-hover:scale-110 transition-all">
+                                                <ShoppingBag size={20} />
+                                            </div>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-700">Order History</span>
+                                        </div>
+                                        <ChevronRight size={16} className="text-slate-300" />
+                                    </Link>
+
+                                    <Link 
+                                        to="/wishlist" 
+                                        onClick={() => setIsUserDrawerOpen(false)}
+                                        className="flex items-center justify-between p-5 bg-slate-50 border border-gray-100 rounded-2xl hover:bg-yellow-50 hover:border-yellow-200 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-white rounded-xl text-slate-400 group-hover:text-yellow-500 group-hover:scale-110 transition-all">
+                                                <Heart size={20} />
+                                            </div>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-700">Wishlist Inventory</span>
+                                        </div>
+                                        <ChevronRight size={16} className="text-slate-300" />
+                                    </Link>
+
+                                    {userInfo.isAdmin && (
+                                        <Link 
+                                            to="/admin/dashboard" 
+                                            onClick={() => setIsUserDrawerOpen(false)}
+                                            className="flex items-center justify-between p-5 bg-slate-800 border-none rounded-2xl hover:bg-yellow-500 transition-all group text-white hover:text-slate-900 shadow-xl shadow-slate-100"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="p-2 bg-white/10 rounded-xl group-hover:bg-white/40 transition-all">
+                                                    <LayoutDashboard size={20} />
+                                                </div>
+                                                <span className="text-xs font-black uppercase tracking-widest italic tracking-tighter">Command Console</span>
+                                            </div>
+                                            <ChevronRight size={16} className="opacity-50" />
+                                        </Link>
+                                    )}
+                                </div>
+                            ) : (
+                                <Link 
+                                    to="/login" 
+                                    onClick={() => setIsUserDrawerOpen(false)}
+                                    className="w-full h-16 bg-yellow-400 text-gray-900 rounded-2xl font-black uppercase text-xs tracking-[0.2em] flex items-center justify-center shadow-2xl shadow-yellow-100 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                >
+                                    Access Protocol
+                                </Link>
+                            )}
+                        </div>
+
+                        {/* Footer Logout */}
+                        {userInfo && (
+                            <div className="p-6 border-t border-gray-50 bg-slate-50 shrink-0">
+                                <button 
+                                    onClick={() => { setIsUserDrawerOpen(false); logoutHandler(); }}
+                                    className="w-full py-4 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-red-500 hover:text-white transition-all duration-300 border border-red-100"
+                                >
+                                    Terminate Session
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* TIER 3: NAV BAR */}
             <div className="border-t border-gray-100 hidden md:block">

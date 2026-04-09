@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Lock, Loader } from 'lucide-react';
+import { Lock, Loader, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
 
@@ -11,6 +11,8 @@ const ResetPasswordPage = () => {
     
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -56,13 +58,20 @@ const ResetPasswordPage = () => {
                                     <Lock className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     required
-                                    className="block w-full pl-10 sm:text-sm border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500 border p-3"
+                                    className="block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500 border p-3"
                                     placeholder="Enter new password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-slate-600 focus:outline-none"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
                             </div>
                         </div>
 
@@ -73,13 +82,20 @@ const ResetPasswordPage = () => {
                                     <Lock className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
-                                    type="password"
+                                    type={showConfirmPassword ? "text" : "password"}
                                     required
-                                    className="block w-full pl-10 sm:text-sm border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500 border p-3"
+                                    className="block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500 border p-3"
                                     placeholder="Confirm new password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-slate-600 focus:outline-none"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
                             </div>
                         </div>
 
