@@ -34,8 +34,8 @@ const app = express();
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-// app.use(mongoSanitize()); // Temporarily disabled for diagnostics
-// app.use(xss()); // Temporarily disabled for diagnostics
+app.use(mongoSanitize()); // Prevent NoSQL Injection
+app.use(xss()); // Filter XSS attacks
 
 app.use(cors({
     origin: [
