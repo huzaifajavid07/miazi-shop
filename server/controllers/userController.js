@@ -4,6 +4,7 @@ import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
 import generateToken from '../utils/generateToken.js';
 import bcrypt from 'bcryptjs';
+import sendEmail from '../utils/emailUtils.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -168,7 +169,6 @@ const googleAuth = asyncHandler(async (req, res) => {
     }
 });
 
-import sendEmail from '../utils/emailUtils.js';
 
 // @desc    Forgot Password (Generate OTP)
 // @route   POST /api/users/forgot-password

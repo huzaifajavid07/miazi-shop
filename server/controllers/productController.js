@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
+import Order from '../models/orderModel.js';
+import mongoose from 'mongoose';
 
 // @desc    Fetch all products
 // @route   GET /api/products
@@ -154,7 +156,7 @@ const createProductReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const { id } = req.params;
 
-    const isObjectId = id.match(/^[0-9a-fA-F]{24}$/);
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
     let product;
 
     if (isObjectId) {
@@ -164,18 +166,15 @@ const createProductReview = asyncHandler(async (req, res) => {
     }
 
     if (product) {
-        // STRICT LOGIC: Verify the user has purchased this product
-        // We look for an order belonging to the user that contains this product and is theoretically paid/delivered.
-        // I will check if they have any 'isPaid' = true order for this product.
-        const hasPurchased = await import('../models/orderModel.js').then(module => module.default.findOne({
+        // STRICT LOGIC: Verify the user has placed an order for this product
+        const hasOrder = await Order.findOne({
             user: req.user._id,
-            isPaid: true,
             'orderItems.product': product._id
-        }));
+        });
 
-        if (!hasPurchased) {
+        if (!hasOrder) {
             res.status(400);
-            throw new Error('You must purchase this product to review it');
+            throw new Error('You must order this product to review it');
         }
 
         const alreadyReviewed = product.reviews.find(
