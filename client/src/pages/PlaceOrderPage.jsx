@@ -28,9 +28,35 @@ const PlaceOrderPage = () => {
         }
     }, [userInfo, shippingAddress?.address, navigate]);
 
+    // Store Reference: Tatua Chowrasta
+    const storeLocation = { lat: 23.4055098, lng: 90.739426 };
+
+    // Distance Calculation (Haversine Formula)
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Radius of the earth in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2); 
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        const d = R * c; // Distance in km
+        return d;
+    };
+
+    const userDistance = (cart.shippingAddress?.lat && cart.shippingAddress?.lng) 
+        ? calculateDistance(storeLocation.lat, storeLocation.lng, cart.shippingAddress.lat, cart.shippingAddress.lng)
+        : null;
+
+    // Unified Shipping Price Calculation
+    // Logic: 4 BDT per KM, min 60 BDT. Fallback to 120 BDT if no GPS.
+    const shippingPrice = userDistance 
+        ? Math.max(60, Math.round(userDistance * 4)) 
+        : 120;
+
     // Calculate prices
     const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
-    const shippingPrice = itemsPrice > 50000 ? 0 : 500;
     const codSurcharge = paymentMethod === 'COD' ? Math.round(0.03 * itemsPrice) : 0;
     const totalPrice = itemsPrice + shippingPrice + codSurcharge;
 
@@ -337,7 +363,12 @@ const PlaceOrderPage = () => {
                                     <span className="text-white font-black font-sans text-sm italic tracking-tighter">৳{itemsPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between items-center group">
-                                    <span className="uppercase tracking-[0.2em] text-[9px] font-black text-gray-500 group-hover:text-white transition-colors duration-300">Logistic Coordination</span>
+                                    <div className="flex flex-col">
+                                        <span className="uppercase tracking-[0.2em] text-[9px] font-black text-gray-500 group-hover:text-white transition-colors duration-300">Logistic Coordination</span>
+                                        {userDistance && (
+                                            <span className="text-[7px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5">Distance: {userDistance.toFixed(1)} KM</span>
+                                        )}
+                                    </div>
                                     <span className="text-white font-black font-sans text-sm italic tracking-tighter">৳{shippingPrice.toLocaleString()}</span>
                                 </div>
                                 

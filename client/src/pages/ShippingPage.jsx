@@ -14,6 +14,8 @@ const ShippingPage = () => {
     const [postalCode, setPostalCode] = useState(shippingAddress?.postalCode || '');
     const [country, setCountry] = useState(shippingAddress?.country || '');
     const [phone, setPhone] = useState(shippingAddress?.phone || '');
+    const [lat, setLat] = useState(shippingAddress?.lat || null);
+    const [lng, setLng] = useState(shippingAddress?.lng || null);
     const [detecting, setDetecting] = useState(false);
 
     const dispatch = useDispatch();
@@ -30,6 +32,8 @@ const ShippingPage = () => {
             setCity(data.cityName || '');
             setPostalCode(data.zipCode || '');
             setCountry(data.countryName || ''); 
+            setLat(data.latitude || null);
+            setLng(data.longitude || null);
             setAddress(`${data.cityName || ''}, ${data.regionName || ''}, ${data.countryName || ''}`);
             
             toast.success('Location detected automatically!');
@@ -48,6 +52,8 @@ const ShippingPage = () => {
                     const { latitude, longitude } = position.coords;
                     const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
                     setAddress(mapsLink);
+                    setLat(latitude);
+                    setLng(longitude);
                     toast.success('GPS Location detected!');
                     setDetecting(false);
                 },
@@ -66,7 +72,7 @@ const ShippingPage = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(saveShippingAddress({ address, city, postalCode, country, phone }));
+        dispatch(saveShippingAddress({ address, city, postalCode, country, phone, lat, lng }));
         navigate('/placeorder');
     };
 

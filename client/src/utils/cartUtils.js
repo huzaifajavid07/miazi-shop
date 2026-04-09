@@ -1,5 +1,5 @@
 export const addDecimals = (num) => {
-    return (Math.round(num * 100) / 100).toFixed(2);
+    return (Math.round(num * 100) / 100).toFixed(0); // Use 0 for whole numbers in Taka
 };
 
 export const updateCart = (state) => {
@@ -8,19 +8,9 @@ export const updateCart = (state) => {
         state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
 
-    // Calculate shipping price (If order is over $100 then free, else $10 shipping)
-    state.shippingPrice = addDecimals(state.itemsPrice > 100 ? 0 : 10);
-
-    // Remove tax (Set to 0)
-    state.taxPrice = addDecimals(0);
-
-    // Calculate total price
-    state.totalPrice = (
-        Number(state.itemsPrice) +
-        Number(state.shippingPrice) +
-        Number(state.taxPrice)
-    ).toFixed(2);
-
+    // Dynamic shipping logic is now handled in the Page components based on distance
+    // We only persist itemsPrice and cartItems to localStorage
+    
     localStorage.setItem('cartItems', JSON.stringify(state));
 
     return state;
