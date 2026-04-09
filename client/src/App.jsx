@@ -19,6 +19,7 @@ import ShippingPage from './pages/ShippingPage';
 import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import MyOrdersPage from './pages/MyOrdersPage';
+import ProfilePage from './pages/ProfilePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
                         <Route path="/placeorder" element={<PlaceOrderPage />} />
                         <Route path="/order/:id" element={<OrderDetailsPage />} />
                         <Route path="/myorders" element={<MyOrdersPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                     </Routes>
                 </main>
