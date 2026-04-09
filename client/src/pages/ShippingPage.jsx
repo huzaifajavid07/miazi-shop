@@ -22,15 +22,15 @@ const ShippingPage = () => {
     const detectLocation = async () => {
         setDetecting(true);
         try {
-            // First try IP-based location via ipinfo.io (No browser permission required)
-            const response = await fetch('https://ipinfo.io/json');
+            // First try IP-based location via freeipapi (No browser permission required, excellent CORS)
+            const response = await fetch('https://freeipapi.com/api/json');
             if (!response.ok) throw new Error('IP lookup failed');
             const data = await response.json();
 
-            setCity(data.city || '');
-            setPostalCode(data.postal || '');
-            setCountry(data.country || ''); 
-            setAddress(`${data.city || ''}, ${data.region || ''}, ${data.country || ''}`);
+            setCity(data.cityName || '');
+            setPostalCode(data.zipCode || '');
+            setCountry(data.countryName || ''); 
+            setAddress(`${data.cityName || ''}, ${data.regionName || ''}, ${data.countryName || ''}`);
             
             toast.success('Location detected automatically!');
             setDetecting(false);

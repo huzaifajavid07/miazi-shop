@@ -152,8 +152,16 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @access  Private
 const createProductReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
+    const { id } = req.params;
 
-    const product = await Product.findById(req.params.id);
+    const isObjectId = id.match(/^[0-9a-fA-F]{24}$/);
+    let product;
+
+    if (isObjectId) {
+        product = await Product.findById(id);
+    } else {
+        product = await Product.findOne({ slug: id });
+    }
 
     if (product) {
         // STRICT LOGIC: Verify the user has purchased this product

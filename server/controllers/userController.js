@@ -193,7 +193,16 @@ const forgotPassword = asyncHandler(async (req, res) => {
     user.resetOtpExpire = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
     await user.save();
 
-    // Send Email
+    // Send Email OR Fallback to Console for Local Dev
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.warn(`\n[DEV WARNING] EMAIL_USER or EMAIL_PASS not set in .env!`);
+        console.warn(`[DEV WARNING] Your password reset OTP is: ${otp}\n`);
+        
+        return res.status(200).json({ 
+            message: 'Email not configured. Check terminal for your OTP.'
+        });
+    }
+
     try {
         await sendEmail({
             email: user.email,
