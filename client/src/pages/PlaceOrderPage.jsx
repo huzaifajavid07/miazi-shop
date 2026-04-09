@@ -258,8 +258,11 @@ const PlaceOrderPage = () => {
                                                 <div className="flex items-start gap-6">
                                                     <span className="text-5xl font-black text-white/10 italic">02</span>
                                                     <div>
-                                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Merchant Number</p>
-                                                        <p className="text-2xl font-black text-yellow-400 tracking-[0.1em] underline underline-offset-8 decoration-white/20">+880 1612-893871</p>
+                                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Merchant Numbers</p>
+                                                        <div className="space-y-4">
+                                                            <p className="text-2xl font-black text-yellow-400 tracking-[0.05em] underline underline-offset-8 decoration-white/20">+880 1612-893871</p>
+                                                            <p className="text-2xl font-black text-yellow-400 tracking-[0.05em] underline underline-offset-8 decoration-white/20">+880 1905-507895</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start gap-6">
