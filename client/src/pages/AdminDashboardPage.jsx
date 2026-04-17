@@ -30,7 +30,6 @@ const AdminDashboardPage = () => {
     // Notification Form States
     const [notifData, setNotifData] = useState({ title: '', message: '', type: 'info', link: '' });
     const [isSendingNotif, setIsSendingNotif] = useState(false);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     // Filtering States
     const [productSearch, setProductSearch] = useState('');
@@ -351,55 +350,19 @@ const AdminDashboardPage = () => {
                 </div>
             </aside>
 
-            {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 z-50 px-6 py-3 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] ring-1 ring-white/50">
-                {sidebarItems.slice(0, 4).map(item => (
+            {/* ========== MOBILE ALL-IN-ONE SCROLLABLE BAR ========== */}
+            <div className="lg:hidden fixed bottom-6 left-6 right-6 h-20 bg-slate-900 border border-slate-800 z-50 px-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] ring-4 ring-white/10">
+                {sidebarItems.map(item => (
                     <button 
                         key={item.id} 
-                        onClick={() => { setActiveTab(item.id); setIsDrawerOpen(false); }}
-                        className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === item.id ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-60'}`}
+                        onClick={() => setActiveTab(item.id)}
+                        className={`flex flex-col items-center justify-center gap-1.5 shrink-0 px-4 py-2 rounded-2xl transition-all duration-300 ${activeTab === item.id ? 'bg-yellow-400 text-slate-900 scale-105 shadow-lg shadow-yellow-400/20' : 'text-slate-400'}`}
                     >
-                        <item.icon size={20} className={activeTab === item.id ? 'text-yellow-500 fill-yellow-50' : ''} />
-                        <span className="text-[8px] font-black uppercase tracking-widest">{item.name}</span>
+                        <item.icon size={18} className={activeTab === item.id ? 'fill-slate-900' : ''} />
+                        <span className="text-[7px] font-black uppercase tracking-[0.1em] whitespace-nowrap">{item.name}</span>
                     </button>
                 ))}
-                <button 
-                    onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-                    className={`flex flex-col items-center gap-1 transition-all duration-300 ${isDrawerOpen ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-60'}`}
-                >
-                    <Menu size={20} className={isDrawerOpen ? 'text-yellow-500' : ''} />
-                    <span className="text-[8px] font-black uppercase tracking-widest">More</span>
-                </button>
             </div>
-
-            {/* ========== MOBILE OVERFLOW DRAWER ========== */}
-            {isDrawerOpen && (
-                <div className="lg:hidden fixed inset-0 z-[60] animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsDrawerOpen(false)}></div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[3rem] p-8 shadow-2xl animate-in slide-in-from-bottom duration-500 ring-1 ring-white/20">
-                        <div className="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-8"></div>
-                        <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 text-center">More Consoles</h3>
-                        <div className="grid grid-cols-3 gap-6">
-                            {sidebarItems.slice(4).map(item => (
-                                <button
-                                    key={item.id}
-                                    onClick={() => { setActiveTab(item.id); setIsDrawerOpen(false); }}
-                                    className={`flex flex-col items-center gap-3 p-4 rounded-3xl transition-all duration-300 ${activeTab === item.id ? 'bg-slate-900 text-white shadow-xl shadow-slate-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
-                                >
-                                    <item.icon size={24} className={activeTab === item.id ? 'text-yellow-400' : ''} />
-                                    <span className="text-[8px] font-black uppercase tracking-widest text-center">{item.name}</span>
-                                </button>
-                            ))}
-                        </div>
-                        <button 
-                            onClick={() => setIsDrawerOpen(false)}
-                            className="w-full mt-10 py-4 bg-slate-50 text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest"
-                        >
-                            Close Menu
-                        </button>
-                    </div>
-                </div>
-            )}
 
             {/* ========== MAIN CONTENT ========== */}
             <main className="flex-1 min-w-0">
@@ -420,7 +383,7 @@ const AdminDashboardPage = () => {
                     </div>
                 </header>
 
-                <div className="p-4 md:p-8 pb-32 lg:pb-8 w-full max-w-7xl mx-auto">
+                <div className="p-4 md:p-8 pb-40 lg:pb-8 w-full max-w-7xl mx-auto">
                     {/* Defensive rendering for data failure */}
                     {(productsLoading && products?.length === 0) ? (
                         <div className="flex flex-col items-center justify-center py-40">
