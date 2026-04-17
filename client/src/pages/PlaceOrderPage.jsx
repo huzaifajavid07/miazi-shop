@@ -145,7 +145,7 @@ const PlaceOrderPage = () => {
                     <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-emerald-200">
                         <CheckCircle2 size={48} className="text-white" />
                     </div>
-                    <h2 className="text-3xl font-black text-slate-800 uppercase tracking-tighter mb-4 italic">Congratulations!</h2>
+                    <h2 className="text-3xl font-black text-slate-800 uppercase tracking-tighter mb-4">Congratulations!</h2>
                     <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8 uppercase tracking-widest px-4">
                         Order <span className="text-indigo-600 font-bold">#{orderId.slice(-8).toUpperCase()}</span> has been successfully transmitted to our dispatch unit.
                     </p>
@@ -164,7 +164,7 @@ const PlaceOrderPage = () => {
             <div className="max-w-7xl mx-auto px-4 pt-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter italic">Checkout Protocol <span className="text-blue-600">v1.2</span></h1>
+                        <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Checkout Protocol <span className="text-blue-600">v1.2</span></h1>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">Manifest Finalization & Logistics Prep</p>
                     </div>
                     <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
@@ -239,7 +239,7 @@ const PlaceOrderPage = () => {
                                             <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">Cash On Delivery</p>
                                             <div className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-black rounded uppercase">+3% Fee</div>
                                         </div>
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 italic">Slow Verification Flow</p>
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Slow Verification Flow</p>
                                     </div>
                                 </button>
 
@@ -253,9 +253,9 @@ const PlaceOrderPage = () => {
                                     <div className="flex-1">
                                         <div className="flex items-center justify-between">
                                             <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">bKash / Nagad</p>
-                                            <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded uppercase italic">SAVE 3%</div>
+                                            <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded uppercase">SAVE 3%</div>
                                         </div>
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 italic">Manual Direct Protocol</p>
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Manual Direct Protocol</p>
                                     </div>
                                 </button>
                             </div>
@@ -275,14 +275,14 @@ const PlaceOrderPage = () => {
                                             
                                             <div className="space-y-8 mb-10">
                                                 <div className="flex items-start gap-6">
-                                                    <span className="text-5xl font-black text-white/10 italic">01</span>
+                                                    <span className="text-5xl font-black text-white/10">01</span>
                                                     <div>
                                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Send Exact Amount</p>
-                                                        <p className="text-3xl font-black text-white italic tracking-tighter">৳{totalPrice.toLocaleString()}</p>
+                                                        <p className="text-3xl font-black text-white tracking-tighter">৳{totalPrice.toLocaleString()}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start gap-6">
-                                                    <span className="text-5xl font-black text-white/10 italic">02</span>
+                                                    <span className="text-5xl font-black text-white/10">02</span>
                                                     <div>
                                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Merchant Numbers</p>
                                                         <div className="space-y-4">
@@ -292,7 +292,7 @@ const PlaceOrderPage = () => {
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start gap-6">
-                                                    <span className="text-5xl font-black text-white/10 italic">03</span>
+                                                    <span className="text-5xl font-black text-white/10">03</span>
                                                     <div className="flex-1">
                                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Transmission Receipt</p>
                                                         <label className={`w-full h-20 border-2 border-dashed rounded-3xl flex items-center justify-center cursor-pointer transition-all ${image ? 'border-emerald-500 bg-emerald-500/10' : 'border-white/20 hover:border-white/40 bg-white/5'}`}>
@@ -324,7 +324,7 @@ const PlaceOrderPage = () => {
                                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Inventory List</p>
                                     </div>
                                 </div>
-                                <span className="bg-slate-100 px-4 py-1.5 rounded-full text-[9px] font-black text-slate-500 uppercase tracking-widest italic">{cart.cartItems.length} Units</span>
+                                <span className="bg-slate-100 px-4 py-1.5 rounded-full text-[9px] font-black text-slate-500 uppercase tracking-widest">{cart.cartItems.length} Units</span>
                             </div>
                             <div className="divide-y divide-slate-50 max-h-[400px] overflow-y-auto">
                                 {cart.cartItems.map((item, index) => (
@@ -334,13 +334,13 @@ const PlaceOrderPage = () => {
                                             <img src={item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}`} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply relative z-10" />
                                         </div>
                                         <div className="flex-1">
-                                            <Link to={`/product/${item.slug}`} className="text-sm font-black text-slate-800 hover:text-indigo-600 transition-colors uppercase italic">{item.name}</Link>
+                                            <Link to={`/product/${item.slug}`} className="text-sm font-black text-slate-800 hover:text-indigo-600 transition-colors uppercase">{item.name}</Link>
                                             <div className="flex items-center gap-4 mt-3">
                                                 <div className="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black text-slate-500 uppercase tracking-widest">QTY: {item.qty}</div>
                                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Unit: ৳{item.price.toLocaleString()}</div>
                                             </div>
                                         </div>
-                                        <div className="text-base font-black text-slate-800 italic tracking-tighter">৳{(item.qty * item.price).toLocaleString()}</div>
+                                        <div className="text-base font-black text-slate-800 tracking-tighter">৳{(item.qty * item.price).toLocaleString()}</div>
                                     </div>
                                 ))}
                             </div>
@@ -354,13 +354,13 @@ const PlaceOrderPage = () => {
                             
                             <div className="p-10 border-b border-white/5">
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-2">Billing Matrix</h2>
-                                <h3 className="text-2xl font-black text-white italic tracking-tighter">Summary Data</h3>
+                                <h3 className="text-2xl font-black text-white tracking-tighter">Summary Data</h3>
                             </div>
 
                             <div className="p-10 space-y-6">
                                 <div className="flex justify-between items-center group">
                                     <span className="uppercase tracking-[0.2em] text-[9px] font-black text-gray-500 group-hover:text-white transition-colors duration-300">Net Product Subtotal</span>
-                                    <span className="text-white font-black font-sans text-sm italic tracking-tighter">৳{itemsPrice.toLocaleString()}</span>
+                                    <span className="text-white font-black font-sans text-sm tracking-tighter">৳{itemsPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between items-center group">
                                     <div className="flex flex-col">
@@ -369,7 +369,7 @@ const PlaceOrderPage = () => {
                                             <span className="text-[7px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5">Distance: {userDistance.toFixed(1)} KM</span>
                                         )}
                                     </div>
-                                    <span className="text-white font-black font-sans text-sm italic tracking-tighter">৳{shippingPrice.toLocaleString()}</span>
+                                    <span className="text-white font-black font-sans text-sm tracking-tighter">৳{shippingPrice.toLocaleString()}</span>
                                 </div>
                                 
                                 {paymentMethod === 'COD' && (
@@ -380,14 +380,14 @@ const PlaceOrderPage = () => {
                                             </div>
                                             <span className="uppercase tracking-widest text-[9px] font-black text-amber-400">COD Handling Fee (3%)</span>
                                         </div>
-                                        <span className="text-amber-400 font-black font-sans text-base italic tracking-tighter">৳{codSurcharge.toLocaleString()}</span>
+                                        <span className="text-amber-400 font-black font-sans text-base tracking-tighter">৳{codSurcharge.toLocaleString()}</span>
                                     </div>
                                 )}
 
                                 <div className="pt-10 border-t border-white/10 flex flex-col gap-4">
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2 italic">Total Authorized Amount</p>
+                                            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">Total Authorized Amount</p>
                                             <p className="text-5xl font-black text-white italic tracking-tighter">৳{totalPrice.toLocaleString()}</p>
                                         </div>
                                         <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-indigo-400 mb-2">

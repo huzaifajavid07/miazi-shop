@@ -97,7 +97,7 @@ const Header = () => {
                     <div className="flex items-center gap-4">
                         <Link to="#" className="flex items-center gap-1 hover:text-yellow-500"><MapPin size={14} /> Store Locator</Link>
                         <span className="text-gray-200">|</span>
-                        <Link to="/orders" className="flex items-center gap-1 hover:text-yellow-500"><Truck size={14} /> Track Your Order</Link>
+                        <Link to="/myorders" className="flex items-center gap-1 hover:text-yellow-500"><Truck size={14} /> Track Your Order</Link>
                         <span className="text-gray-200">|</span>
                         <div className="flex items-center gap-1">Dollar (US) <ChevronDown size={10} /></div>
                         <span className="text-gray-200">|</span>

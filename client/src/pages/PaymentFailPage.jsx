@@ -15,7 +15,7 @@ const PaymentFailPage = () => {
                             <XCircle size={56} strokeWidth={1.5} />
                         </div>
                         
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase italic mb-4">Transaction Denied</h1>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-4">Transaction Denied</h1>
                         <p className="text-gray-500 font-medium leading-relaxed mb-8">
                             We were unable to verify your financial protocol with <span className="text-red-600 font-bold uppercase tracking-widest text-[10px]">SSLCommerz</span>. Your order attempt has been logged but not authorized.
                         </p>

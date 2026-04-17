@@ -295,7 +295,7 @@ const AdminDashboardPage = () => {
     };
 
     // Derived Data
-    const totalRevenue = orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0);
+    const totalRevenue = Array.isArray(orders) ? orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0) : 0;
     const filteredProducts = products.filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(productSearch.toLowerCase()) || p.brand.toLowerCase().includes(productSearch.toLowerCase());
         const matchesCategory = categoryFilter === '' || p.category?._id === categoryFilter || p.category === categoryFilter;
@@ -313,7 +313,7 @@ const AdminDashboardPage = () => {
     ];
 
     return (
-        <div className="flex min-h-screen bg-[#F8FAFC] font-sans scroll-smooth">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-[#F8FAFC] font-sans scroll-smooth overflow-x-hidden w-full max-w-[100vw]">
             {/* ========== SIDEBAR ========== */}
             <aside className="w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col sticky top-0 h-screen">
                 <div className="p-8">
@@ -366,10 +366,8 @@ const AdminDashboardPage = () => {
             <main className="flex-1 min-w-0">
                 {/* Top Nav */}
                 <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-40">
-                    <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                        <span>Console</span>
-                        <ChevronRight size={14} />
-                        <span className="text-slate-900 underline decoration-yellow-400 decoration-2 underline-offset-4 capitalize">{activeTab}</span>
+                    <div className="flex items-center gap-2 text-slate-900 text-xs font-bold uppercase tracking-widest">
+                        <span className="underline decoration-yellow-400 decoration-2 underline-offset-4 capitalize">{activeTab}</span>
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -383,7 +381,15 @@ const AdminDashboardPage = () => {
                     </div>
                 </header>
 
-                <div className="p-4 md:p-8 pb-32 lg:pb-8">
+                <div className="p-4 md:p-8 pb-32 lg:pb-8 w-full">
+                    {/* Defensive rendering for data failure */}
+                    {(productsLoading && products?.length === 0) ? (
+                        <div className="flex flex-col items-center justify-center py-40">
+                            <Loader size={40} className="animate-spin text-yellow-500 mb-4" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Loading Console Data...</p>
+                        </div>
+                    ) : (Array.isArray(products) && Array.isArray(categories)) ? (
+                        <>
                     {/* ========== OVERVIEW TAB ========== */}
                     {activeTab === 'overview' && (
                         <div className="space-y-8 animate-in fade-in duration-500">
@@ -575,8 +581,8 @@ const AdminDashboardPage = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-6">
-                                {orders.filter(o => o.paymentStatus === 'Pending Approval').map(order => (
+                            <div className="grid grid-cols-1 gap-6 w-full">
+                                {(Array.isArray(orders) ? orders : []).filter(o => o?.paymentStatus === 'Pending Approval').map(order => (
                                     <div key={order._id} className="bg-white rounded-[2.5rem] border-2 border-slate-100 p-8 flex flex-col xl:flex-row gap-8 hover:border-yellow-400 transition-all group overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-4 bg-slate-900 text-yellow-400 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl">
                                             Request ID: {order._id.slice(-6).toUpperCase()}
@@ -628,7 +634,7 @@ const AdminDashboardPage = () => {
                                                             Open Map Location
                                                         </a>
                                                     ) : (
-                                                        <p className="text-[10px] text-slate-400 text-center italic">{order.shippingAddress?.address}</p>
+                                                        <p className="text-[10px] text-slate-400 text-center">{order.shippingAddress?.address}</p>
                                                     )}
                                                 </div>
                                                 <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
@@ -762,7 +768,7 @@ const AdminDashboardPage = () => {
                                     ) : (
                                         <div className="bg-slate-50/50 border-2 border-dashed border-slate-100 rounded-[3rem] p-32 text-center opacity-40">
                                             <Bell size={48} className="mx-auto mb-6 text-slate-200" />
-                                            <p className="text-sm font-black uppercase tracking-widest text-slate-400 italic">No broadcast logs found</p>
+                                            <p className="text-sm font-black uppercase tracking-widest text-slate-400">No broadcast logs found</p>
                                         </div>
                                     )}
                                 </div>
@@ -824,7 +830,7 @@ const AdminDashboardPage = () => {
                                                 <div>
                                                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">{order.user?.name || 'Guest User'}</h3>
                                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{order.user?.email}</p>
-                                                    <p className="text-[9px] font-black text-indigo-500 uppercase tracking-widest mt-1 italic">
+                                                    <p className="text-[9px] font-black text-indigo-500 uppercase tracking-widest mt-1">
                                                         Placed: {new Date(order.createdAt).toLocaleDateString()} @ {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                     <div className="flex items-center gap-2 mt-2">
@@ -920,7 +926,7 @@ const AdminDashboardPage = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
-                                        {orders.map(order => (
+                                        {(Array.isArray(orders) ? orders : []).map(order => (
                                             <tr key={order._id} className="hover:bg-slate-50/30 transition-colors group">
                                                 <td className="p-6 font-black text-xs text-slate-800">
                                                     <button 
@@ -970,6 +976,15 @@ const AdminDashboardPage = () => {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    )}
+                        </>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-40 text-center">
+                            <AlertTriangle size={48} className="text-red-500 mb-4" />
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Interface Failed To Initialize</h3>
+                            <p className="text-xs text-slate-400 mt-2">The console was unable to acquire the mandatory data manifests from the central server.</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Reboot Terminal</button>
                         </div>
                     )}
                 </div>

@@ -77,7 +77,7 @@ const CartPage = () => {
                                                     <img src={item.image || (item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}`)} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <Link to={`/product/${item.slug}`} className="text-sm md:text-base font-black text-slate-800 hover:text-blue-600 transition-colors line-clamp-1 uppercase italic tracking-tight">{item.name}</Link>
+                                                    <Link to={`/product/${item.slug}`} className="text-sm md:text-base font-black text-slate-800 hover:text-blue-600 transition-colors line-clamp-1 uppercase tracking-tight">{item.name}</Link>
                                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">/{item.category?.name || 'Item'}</p>
                                                     <button onClick={() => removeFromCartHandler(item._id)} className="mt-2 md:mt-4 text-[10px] font-black text-red-500 uppercase flex items-center gap-1.5 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-full w-max transition-colors">
                                                         <Trash2 size={12} /> Remove Item
@@ -90,7 +90,7 @@ const CartPage = () => {
                                                 {/* Price */}
                                                 <div className="md:col-span-2 md:text-center">
                                                     <p className="md:hidden text-[9px] font-black text-gray-400 uppercase mb-1">Price</p>
-                                                    <span className="text-sm font-black text-slate-800 italic">৳{item.price.toLocaleString()}</span>
+                                                    <span className="text-sm font-black text-slate-800">৳{item.price.toLocaleString()}</span>
                                                 </div>
 
                                                 {/* Quantity */}
@@ -111,7 +111,7 @@ const CartPage = () => {
                                                 {/* Total */}
                                                 <div className="md:col-span-2 md:text-right">
                                                     <p className="md:hidden text-[9px] font-black text-gray-400 uppercase mb-1 text-right">Subtotal</p>
-                                                    <span className="text-lg md:text-base font-black text-indigo-600 block text-right font-sans italic tracking-tighter">৳{(item.qty * item.price).toLocaleString()}</span>
+                                                    <span className="text-lg md:text-base font-black text-indigo-600 block text-right font-sans tracking-tighter">৳{(item.qty * item.price).toLocaleString()}</span>
                                                 </div>
                                             </div>
                                         </div>

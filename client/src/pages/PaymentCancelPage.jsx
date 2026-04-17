@@ -12,7 +12,7 @@ const PaymentCancelPage = () => {
                             <AlertCircle size={56} strokeWidth={1.5} />
                         </div>
                         
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase italic mb-4">Registry Aborted</h1>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-4">Registry Aborted</h1>
                         <p className="text-gray-500 font-medium leading-relaxed mb-8">
                             The financial authorization protocol was terminated by the user. No funds have been captured, and your manifest remains in the cart pending further instruction.
                         </p>

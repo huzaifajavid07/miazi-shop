@@ -17,7 +17,7 @@ const PaymentSuccessPage = () => {
                             <CheckCircle2 size={56} strokeWidth={1.5} />
                         </div>
                         
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase italic mb-4">Transaction Authorized</h1>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-4">Transaction Authorized</h1>
                         <p className="text-gray-500 font-medium max-w-md mx-auto leading-relaxed">
                             Payment verified via <span className="text-indigo-600 font-bold uppercase tracking-widest text-xs">SSLCommerz Protocol</span>. Your order has been successfully initialized in our system.
                         </p>

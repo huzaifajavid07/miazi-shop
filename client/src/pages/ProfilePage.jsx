@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/axiosConfig';
-import { Loader, Package, Mail, Calendar, CreditCard, ChevronRight, Eye, Info, Clock, CheckCircle2, User, Truck } from 'lucide-react';
+import { logout } from '../slices/authSlice';
+import { 
+    Loader, Package, Mail, Calendar, 
+    CreditCard, ChevronRight, Eye, Info, 
+    Clock, CheckCircle2, User, Truck,
+    LogOut, RefreshCw
+} from 'lucide-react';
 
 const ProfilePage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { userInfo } = useSelector((state) => state.auth);
 
     useEffect(() => {
@@ -16,10 +24,11 @@ const ProfilePage = () => {
             try {
                 setLoading(true);
                 const { data } = await api.get('/api/orders/myorders');
-                setOrders(data);
+                setOrders(Array.isArray(data) ? data : []);
                 setError(null);
             } catch (err) {
                 setError(err.response?.data?.message || err.message);
+                setOrders([]);
             } finally {
                 setLoading(false);
             }
@@ -44,7 +53,7 @@ const ProfilePage = () => {
                 <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div className="flex items-center gap-6">
                         <div className="w-20 h-20 bg-yellow-400 rounded-3xl flex items-center justify-center text-slate-900 font-black text-3xl shadow-2xl shadow-yellow-100 border-4 border-white">
-                            {userInfo?.email.charAt(0).toUpperCase()}
+                            {userInfo?.email ? userInfo.email.charAt(0).toUpperCase() : 'U'}
                         </div>
                         <div>
                             <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
@@ -53,16 +62,16 @@ const ProfilePage = () => {
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-2">
                                 <div className="flex items-center gap-2 text-gray-500">
                                     <Mail size={14} className="text-yellow-500" />
-                                    <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email}</span>
+                                    <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email || 'Guest Session'}</span>
                                 </div>
                                 <button 
                                     onClick={() => {
-                                        dispatch({ type: 'auth/logout' }); // Direct logout for speed
-                                        window.location.href = '/login';
+                                        dispatch(logout());
+                                        navigate('/login');
                                     }}
                                     className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all w-fit"
                                 >
-                                    <RefreshCw size={12} className="rotate-180" /> Sign Out Session
+                                    <LogOut size={12} /> Sign Out Session
                                 </button>
                             </div>
                         </div>
