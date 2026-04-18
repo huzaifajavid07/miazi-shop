@@ -9,8 +9,9 @@ import mongoose from 'mongoose';
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 12;
     const page = Number(req.query.pageNumber) || 1;
+    const requestedLimit = Number(req.query.limit);
+    const pageSize = requestedLimit === 0 ? 1000 : (requestedLimit || 12); // Use 0 for "all" (capped at 1000)
 
     // ReDoS protection: Limit keyword length and sanitize
     const rawKeyword = req.query.keyword ? String(req.query.keyword).slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '';

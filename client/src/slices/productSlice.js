@@ -3,10 +3,10 @@ import api from '../utils/axiosConfig';
 
 export const listProducts = createAsyncThunk(
     'product/list',
-    async ({ keyword = '', pageNumber = '', category = '', isTrending = '', isDeals = '' } = {}, { rejectWithValue }) => {
+    async ({ keyword = '', pageNumber = '', category = '', isTrending = '', isDeals = '', limit = '' } = {}, { rejectWithValue }) => {
         try {
             const { data } = await api.get(
-                `/api/products?keyword=${keyword}&pageNumber=${pageNumber}&category=${category}&isTrending=${isTrending}&isDeals=${isDeals}`
+                `/api/products?keyword=${keyword}&pageNumber=${pageNumber}&category=${category}&isTrending=${isTrending}&isDeals=${isDeals}&limit=${limit}`
             );
             return data;
         } catch (error) {

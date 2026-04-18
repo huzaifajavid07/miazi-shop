@@ -48,7 +48,8 @@ const AdminDashboardPage = () => {
     const { notifications } = useSelector((state) => state.notifications);
 
     useEffect(() => {
-        dispatch(listProducts({}));
+        // Fetch all products for admin view (bypass pagination)
+        dispatch(listProducts({ limit: 0 }));
         dispatch(listCategories());
         dispatch(fetchNotifications());
         fetchOrders();
@@ -236,8 +237,8 @@ const AdminDashboardPage = () => {
                 toast.success('Created successfully');
             }
             setIsProductModalOpen(false);
-            resetForm();
-            dispatch(listProducts({}));
+            setEditingProduct(null);
+            dispatch(listProducts({ limit: 0 }));
         } catch (err) {
             toast.error(err.message || 'Operation failed');
         }
