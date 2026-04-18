@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCartItems } from '../slices/cartSlice';
 import api, { BASE_URL } from '../utils/axiosConfig';
 import { toast } from 'react-toastify';
-import { ChevronRight, MapPin, CreditCard, ShoppingBag, CheckCircle2, Package, Loader, Zap, Globe } from 'lucide-react';
+import { ChevronRight, MapPin, CreditCard, ShoppingBag, CheckCircle2, CheckCircle,Package,Upload, Loader, Zap, Globe } from 'lucide-react';
 
 const PlaceOrderPage = () => {
     const navigate = useNavigate();
@@ -36,16 +36,16 @@ const PlaceOrderPage = () => {
         const R = 6371; // Radius of the earth in km
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2); 
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const d = R * c; // Distance in km
         return d;
     };
 
-    const userDistance = (cart.shippingAddress?.lat && cart.shippingAddress?.lng) 
+    const userDistance = (cart.shippingAddress?.lat && cart.shippingAddress?.lng)
         ? calculateDistance(storeLocation.lat, storeLocation.lng, cart.shippingAddress.lat, cart.shippingAddress.lng)
         : null;
 
@@ -58,8 +58,19 @@ const PlaceOrderPage = () => {
         return 150; // Premium delivery for long distances (>30km)
     };
 
+    // 1. First, calculate the cost of all items in the cart
+    const itemsPrice = cart.cartItems.reduce(
+        (acc, item) => acc + item.price * item.qty,
+        0
+    );
+
+    // 2. Now these will work because itemsPrice exists
     const shippingPrice = calculateShippingFee(userDistance);
-    const codSurcharge = paymentMethod === 'COD' ? Math.round(0.03 * itemsPrice) : 0;
+
+    const codSurcharge = paymentMethod === 'COD'
+        ? Math.round(0.03 * itemsPrice)
+        : 0;
+
     const totalPrice = itemsPrice + shippingPrice + codSurcharge;
 
     const uploadFileHandler = (e) => {
@@ -208,8 +219,8 @@ const PlaceOrderPage = () => {
                                     <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 flex flex-col justify-center">
                                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Shipping Location</p>
                                         <p className="text-sm font-bold text-slate-700 leading-relaxed">
-                                            {cart.shippingAddress.address},<br/>
-                                            {cart.shippingAddress.city} {cart.shippingAddress.postalCode},<br/>
+                                            {cart.shippingAddress.address},<br />
+                                            {cart.shippingAddress.city} {cart.shippingAddress.postalCode},<br />
                                             {cart.shippingAddress.country}
                                         </p>
                                     </div>
@@ -229,7 +240,7 @@ const PlaceOrderPage = () => {
                                 </div>
                             </div>
                             <div className="p-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <button 
+                                <button
                                     onClick={() => setPaymentMethod('COD')}
                                     className={`p-6 border-2 rounded-[2rem] flex items-center gap-5 transition-all text-left group ${paymentMethod === 'COD' ? 'border-amber-400 bg-amber-50/50 shadow-lg shadow-amber-100' : 'border-slate-50 hover:border-slate-200 bg-white'}`}
                                 >
@@ -245,7 +256,7 @@ const PlaceOrderPage = () => {
                                     </div>
                                 </button>
 
-                                <button 
+                                <button
                                     onClick={() => setPaymentMethod('Online')}
                                     className={`p-6 border-2 rounded-[2rem] flex items-center gap-5 transition-all text-left group ${paymentMethod === 'Online' ? 'border-indigo-600 bg-indigo-50/50 shadow-lg shadow-indigo-100' : 'border-slate-50 hover:border-slate-200 bg-white'}`}
                                 >
@@ -262,56 +273,97 @@ const PlaceOrderPage = () => {
                                 </button>
                             </div>
 
-                            {paymentMethod === 'Online' && (
-                                <div className="p-8 border-t border-slate-50 bg-slate-50/50 animate-in slide-in-from-top-4 duration-500">
-                                    <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
-                                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32"></div>
-                                        <div className="relative z-10">
-                                            <div className="flex items-center gap-3 mb-8">
-                                                <div className="w-10 h-1 gap-2 flex flex-col justify-center">
-                                                    <div className="h-0.5 bg-yellow-400 w-full"></div>
-                                                    <div className="h-0.5 bg-yellow-400 w-2/3"></div>
-                                                </div>
-                                                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-yellow-500">Manual Transfer Key</h4>
-                                            </div>
-                                            
-                                            <div className="space-y-8 mb-10">
-                                                <div className="flex items-start gap-6">
-                                                    <span className="text-5xl font-black text-white/10">01</span>
-                                                    <div>
-                                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Send Exact Amount</p>
-                                                        <p className="text-3xl font-black text-white tracking-tighter">৳{totalPrice.toLocaleString()}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-start gap-6">
-                                                    <span className="text-5xl font-black text-white/10">02</span>
-                                                    <div>
-                                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Merchant Numbers</p>
-                                                        <div className="space-y-4">
-                                                            <p className="text-2xl font-black text-yellow-400 tracking-[0.05em] underline underline-offset-8 decoration-white/20">+880 1612-893871</p>
-                                                            <p className="text-2xl font-black text-yellow-400 tracking-[0.05em] underline underline-offset-8 decoration-white/20">+880 1905-507895</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-start gap-6">
-                                                    <span className="text-5xl font-black text-white/10">03</span>
-                                                    <div className="flex-1">
-                                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Transmission Receipt</p>
-                                                        <label className={`w-full h-20 border-2 border-dashed rounded-3xl flex items-center justify-center cursor-pointer transition-all ${image ? 'border-emerald-500 bg-emerald-500/10' : 'border-white/20 hover:border-white/40 bg-white/5'}`}>
-                                                            <input type="file" onChange={uploadFileHandler} className="hidden" />
-                                                            {uploading ? <Loader className="animate-spin text-yellow-400" /> : (
-                                                                <div className="flex items-center gap-3">
-                                                                    {image ? <><CheckCircle2 size={24} className="text-emerald-400" /> <span className="text-[10px] font-black uppercase tracking-[0.2em]">Verified Upload</span></> : <><ShoppingBag size={20} className="opacity-40" /> <span className="text-[10px] font-black uppercase tracking-[0.2em]">Attach Screenshot</span></>}
-                                                                </div>
-                                                            )}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                           {paymentMethod === 'Online' && (
+  <div className="mt-10 bg-white rounded-3xl shadow-sm border border-slate-100 p-8 animate-in fade-in duration-500">
+    
+    {/* Header */}
+    <div className="flex items-center justify-between mb-10">
+      <h4 className="text-sm font-bold text-slate-800 tracking-wide">
+        Manual Payment
+      </h4>
+      <span className="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-semibold">
+        Secure
+      </span>
+    </div>
+
+    {/* Grid */}
+    <div className="grid md:grid-cols-3 gap-6">
+
+      {/* Step 1 */}
+      <div className="bg-slate-50 rounded-2xl p-6 hover:shadow-md transition">
+        <p className="text-xs text-slate-400 mb-2">Amount Due</p>
+        <h2 className="text-2xl font-bold text-slate-900">
+          ৳{totalPrice.toLocaleString()}
+        </h2>
+        <p className="text-xs text-yellow-600 mt-1">
+          +3% fee if applicable
+        </p>
+      </div>
+
+      {/* Step 2 */}
+      <div className="bg-slate-50 rounded-2xl p-6 hover:shadow-md transition">
+        <p className="text-xs text-slate-400 mb-4">Send To</p>
+
+        <div className="space-y-3">
+          <div>
+            <p className="text-[11px] text-slate-400">Personal</p>
+            <p className="font-semibold text-slate-800">
+              +880 1612-893871
+            </p>
+          </div>
+
+          <div>
+            <p className="text-[11px] text-slate-400">Agent</p>
+            <p className="font-semibold text-slate-800">
+              +880 1905-507895
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Step 3 */}
+      <div className="bg-slate-50 rounded-2xl p-6 hover:shadow-md transition">
+        <p className="text-xs text-slate-400 mb-4">Upload Receipt</p>
+
+        <label
+          className={`w-full h-28 flex flex-col items-center justify-center rounded-xl cursor-pointer transition border-2 ${
+            image
+              ? "border-yellow-400 bg-yellow-50"
+              : "border-dashed border-slate-300 hover:border-yellow-400 hover:bg-yellow-50"
+          }`}
+        >
+          <input type="file" onChange={uploadFileHandler} className="hidden" />
+
+          {uploading ? (
+            <Loader className="animate-spin text-yellow-500" />
+          ) : image ? (
+            <>
+              <CheckCircle className="text-yellow-500" />
+              <p className="text-xs font-semibold text-yellow-700 mt-1">
+                Uploaded
+              </p>
+            </>
+          ) : (
+            <>
+              <Upload className="text-slate-400" />
+              <p className="text-xs text-slate-500 mt-1">
+                Click to upload
+              </p>
+            </>
+          )}
+        </label>
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="mt-8 bg-yellow-50 border border-yellow-100 rounded-xl p-4 flex items-center gap-2">
+      <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+      <p className="text-xs text-yellow-700 font-medium">
+        Payments are verified manually within 15–30 minutes
+      </p>
+    </div>
+  </div>
+)}
                         </div>
 
                         {/* Ordered Items */}
@@ -371,7 +423,7 @@ const PlaceOrderPage = () => {
                                     </div>
                                     <span className="text-slate-800 font-black text-sm">৳{shippingPrice.toLocaleString()}</span>
                                 </div>
-                                
+
                                 {paymentMethod === 'COD' && (
                                     <div className="flex justify-between items-center pt-4 border-t border-slate-50">
                                         <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Cash Collection Fee (3%)</span>
@@ -396,10 +448,10 @@ const PlaceOrderPage = () => {
                                     disabled={cart.cartItems.length === 0 || isPlacing}
                                     className="w-full py-5 mt-6 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-yellow-100 transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
                                 >
-                                    {isPlacing ? <Loader className="animate-spin" size={20}/> : 'Place Order'}
+                                    {isPlacing ? <Loader className="animate-spin" size={20} /> : 'Place Order'}
                                     <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
-                                
+
                                 <div className="text-center pt-4">
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2">
                                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>

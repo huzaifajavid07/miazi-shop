@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../utils/axiosConfig';
-import { toast } from 'react-toastify';
+
 
 export const login = createAsyncThunk('auth/login', async (userData, { rejectWithValue }) => {
     try {
         const response = await api.post('/api/users/login', userData);
         localStorage.setItem('userInfo', JSON.stringify(response.data));
-        toast.success('Login Successful');
+       
         return response.data;
     } catch (error) {
-        toast.error(error.response?.data?.message || error.message);
+       
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });
@@ -18,10 +18,10 @@ export const register = createAsyncThunk('auth/register', async (userData, { rej
     try {
         const response = await api.post('/api/users', userData);
         localStorage.setItem('userInfo', JSON.stringify(response.data));
-        toast.success('Registration Successful');
+       
         return response.data;
     } catch (error) {
-        toast.error(error.response?.data?.message || error.message);
+       
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });
@@ -31,10 +31,10 @@ export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValu
         await api.post('/api/users/logout');
         localStorage.removeItem('userInfo');
         localStorage.removeItem('cartItems'); // clear cart on logout
-        toast.info('Logged out');
+        
         return null; // Return null so payload acts to clear state
     } catch (error) {
-         toast.error(error.response?.data?.message || error.message);
+         
          return rejectWithValue(error.response?.data?.message || error.message);
     }
 });
@@ -43,10 +43,10 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (googleDat
     try {
         const response = await api.post('/api/users/google-login', googleData);
         localStorage.setItem('userInfo', JSON.stringify(response.data));
-        toast.success('Google Login Successful');
+      
         return response.data;
     } catch (error) {
-        toast.error(error.response?.data?.message || error.message);
+       
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });
@@ -54,10 +54,10 @@ export const updateProfile = createAsyncThunk('auth/updateProfile', async (userD
     try {
         const response = await api.put('/api/users/profile', userData);
         localStorage.setItem('userInfo', JSON.stringify(response.data));
-        toast.success('Profile Updated Successfully');
+      
         return response.data;
     } catch (error) {
-        toast.error(error.response?.data?.message || error.message);
+       
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });

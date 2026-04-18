@@ -39,7 +39,7 @@ const CategoryPage = () => {
                 <div className="flex items-center gap-2 text-xs text-gray-400 mb-6">
                     <Link to="/" className="hover:text-yellow-500">Home</Link>
                     <ChevronRight size={12} />
-                    <Link to="/categories" className="hover:text-yellow-500">Categories</Link>
+                    <Link to="/category/69d5d89d456ed47be418a903" className="hover:text-yellow-500">Categories</Link>
                     <ChevronRight size={12} />
                     <span className="text-gray-800 font-bold">{currentCategory?.name || 'All'}</span>
                 </div>

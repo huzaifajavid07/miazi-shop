@@ -23,10 +23,11 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (userInfo) {
+            // Check if toast already exists to prevent double firing during redirect
             if (userInfo.isAdmin) {
-                navigate('/admin/dashboard');
+                navigate('/admin/dashboard', { replace: true });
             } else {
-                navigate(redirect);
+                navigate(redirect, { replace: true });
             }
         }
     }, [navigate, redirect, userInfo]);
@@ -34,16 +35,19 @@ const LoginPage = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
+            // Dismiss all existing toasts before firing a new one
+            toast.dismiss(); 
             await dispatch(login({ email, password })).unwrap();
             toast.success('Successfully logged in.');
         } catch (err) {
-            toast.error(err.message || 'Invalid credentials');
+            toast.error(err?.data?.message || err.message || 'Invalid credentials');
         }
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
         const decoded = jwtDecode(credentialResponse.credential);
         try {
+            toast.dismiss(); 
             await dispatch(googleLogin({
                 name: decoded.name,
                 email: decoded.email,
@@ -52,13 +56,13 @@ const LoginPage = () => {
             })).unwrap();
             toast.success('Successfully logged in via Google.');
         } catch (err) {
-            toast.error(err.message || 'Google Login failed');
+            toast.error(err?.data?.message || err.message || 'Google Login failed');
         }
     };
 
     return (
         <div className="bg-gray-50 min-h-screen pb-20 font-sans">
-            {/* Breadcrumb - Restored Original Style */}
+            {/* Breadcrumb */}
             <div className="bg-white border-b border-gray-200 mb-12">
                 <div className="container-custom py-4 flex items-center gap-2 text-sm text-gray-500">
                     <Link to="/" className="hover:text-yellow-500">Home</Link>
@@ -77,6 +81,13 @@ const LoginPage = () => {
                         </div>
                         
                         <div className="p-8">
+                            {/* Display Redux Error if it exists and we aren't loading */}
+                            {error && !loading && (
+                                <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-[10px] font-bold uppercase">
+                                    {error}
+                                </div>
+                            )}
+
                             <form onSubmit={submitHandler} className="space-y-4">
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest pl-1">Email Address</label>

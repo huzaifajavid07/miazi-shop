@@ -88,15 +88,16 @@ const Header = () => {
         return () => clearTimeout(timer);
     }, [keyword]);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (keyword.trim()) {
-            navigate(`/?keyword=${keyword}`);
+    // Replace your old handleSearch with this:
+    const handleSearch = (value) => {
+        setKeyword(value); // Update the input field state
+
+        if (value.trim()) {
+            navigate(`/?keyword=${value}`); // Update URL instantly
         } else {
-            navigate('/');
+            navigate('/'); // Reset to all products when empty
         }
     };
-
     const logoutHandler = () => {
         dispatch(logout());
         navigate('/');
@@ -149,14 +150,14 @@ const Header = () => {
 
                 {/* Mobile Icons Action Bar */}
                 <div className="flex items-center gap-1 sm:gap-3 md:hidden">
-                    <button 
+                    <button
                         onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                         className={`p-2 transition-colors ${isMobileSearchOpen ? 'text-yellow-500' : 'text-gray-700'}`}
                     >
                         <Search size={22} />
                     </button>
 
-                    <button 
+                    <button
                         onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); }}
                         className="p-2 text-gray-700 hover:text-yellow-500 transition-colors relative"
                     >
@@ -177,7 +178,7 @@ const Header = () => {
                         )}
                     </Link>
 
-                    <button 
+                    <button
                         onClick={() => setIsUserDrawerOpen(true)}
                         className="p-2 text-gray-800 hover:text-yellow-500 transition-colors"
                     >
@@ -190,12 +191,14 @@ const Header = () => {
                 {/* Main Search Bar */}
                 <div className="flex-1 max-w-2xl hidden md:block relative">
                     <form onSubmit={handleSearch} className="flex border-2 border-yellow-400 rounded-full h-11">
+                        {/* Desktop Search */}
                         <input
                             type="text"
                             className="flex-1 bg-transparent px-5 text-sm focus:outline-none"
                             placeholder="Search for Products"
                             value={keyword}
-                            onChange={(e) => setKeyword(e.target.value)}
+                            // Change this line:
+                            onChange={(e) => handleSearch(e.target.value)}
                             onFocus={() => keyword.length > 1 && setShowSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                         />
@@ -213,14 +216,14 @@ const Header = () => {
                             <ul>
                                 {suggestions.map((p) => (
                                     <li key={p._id}>
-                                        <button 
+                                        <button
                                             onMouseDown={(e) => { e.preventDefault(); navigate(`/product/${p._id}`); setShowSuggestions(false); }}
                                             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-yellow-50 transition-colors text-left"
                                         >
                                             <div className="w-10 h-10 bg-gray-50 rounded flex items-center justify-center p-1 shrink-0">
-                                                <img 
-                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/100x100'} 
-                                                    alt="" className="max-w-full max-h-full object-contain mix-blend-multiply" 
+                                                <img
+                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/100x100'}
+                                                    alt="" className="max-w-full max-h-full object-contain mix-blend-multiply"
                                                 />
                                             </div>
                                             <div className="min-w-0">
@@ -236,7 +239,7 @@ const Header = () => {
                 </div>
 
                 <div className="hidden md:flex items-center gap-5 text-gray-700">
-                    <button 
+                    <button
                         onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); }}
                         className="relative p-2 text-gray-700 hover:text-yellow-500 transition-colors group/bell"
                     >
@@ -276,12 +279,14 @@ const Header = () => {
             {/* Mobile Search Row - Toggles with Search Icon */}
             <div className={`md:hidden bg-white border-b border-gray-100 px-4 py-2 transition-all duration-300 overflow-hidden ${isMobileSearchOpen ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0 py-0 border-none'}`}>
                 <form onSubmit={handleSearch} className="flex border-2 border-yellow-400 rounded-2xl h-10 overflow-hidden">
+                    {/* Mobile Search */}
                     <input
                         type="text"
                         className="flex-1 bg-transparent px-4 text-sm focus:outline-none"
                         placeholder="What are you looking for?"
                         value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
+                        // Change this line:
+                        onChange={(e) => handleSearch(e.target.value)}
                     />
                     <button type="submit" className="bg-yellow-400 px-4 flex items-center justify-center">
                         <Search size={18} />
@@ -317,7 +322,7 @@ const Header = () => {
             </div>
 
             {/* SIDE DRAWERS - PLACED AT ROOT FOR RELIABLE MOBILE VISIBILITY */}
-            
+
             {/* NOTIFICATION DRAWER */}
             {isNotifOpen && (
                 <div className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-md" onClick={() => setIsNotifOpen(false)} />
@@ -347,8 +352,8 @@ const Header = () => {
                                             <p className="text-xs text-slate-500 mt-2 leading-relaxed">{n.message}</p>
                                         </div>
                                     </div>
-                                    <button 
-                                        onClick={(e) => handleDeleteNotification(e, n._id)} 
+                                    <button
+                                        onClick={(e) => handleDeleteNotification(e, n._id)}
                                         className="absolute top-6 right-6 p-2 text-gray-300 hover:text-red-500 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
                                     >
                                         <Trash2 size={16} />
@@ -506,8 +511,8 @@ const Header = () => {
                         <span className="text-[10px] font-black uppercase tracking-tighter">Shop</span>
                     </Link>
 
-                    <button 
-                        onClick={() => { setIsMobileSearchOpen(true); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                    <button
+                        onClick={() => { setIsMobileSearchOpen(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                         className="flex-1 flex flex-col items-center justify-center gap-1"
                     >
                         <div className="p-2 rounded-2xl text-slate-400">
@@ -534,7 +539,7 @@ const Header = () => {
                         <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Orders</span>
                     </Link>
 
-                    <button 
+                    <button
                         onClick={() => setIsUserDrawerOpen(true)}
                         className="flex-1 flex flex-col items-center justify-center gap-1"
                     >

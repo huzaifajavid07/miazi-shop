@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-    FiSend, 
-    FiHeadphones, 
-    FiFacebook, 
-    FiTwitter, 
-    FiGithub, 
-    FiChevronUp 
+import {
+    FiSend,
+    FiHeadphones,
+    FiFacebook,
+    FiTwitter,
+    FiGithub,
+    FiChevronUp
 } from 'react-icons/fi';
 import { FaGoogle, FaCcVisa, FaCcMastercard, FaCcDiscover, FaCcStripe, FaCcPaypal } from 'react-icons/fa6';
 
@@ -27,12 +27,12 @@ const Footer = () => {
                             ...and receive <span className="font-bold">$20 coupon for first shopping.</span>
                         </p>
                     </div>
-                    
+
                     <div className="w-full max-w-md">
                         <form className="flex rounded-full overflow-hidden bg-white shadow-sm">
-                            <input 
-                                type="email" 
-                                placeholder="Email address" 
+                            <input
+                                type="email"
+                                placeholder="Email address"
                                 className="w-full px-6 py-3 text-sm outline-none bg-transparent"
                                 required
                             />
@@ -47,7 +47,7 @@ const Footer = () => {
             {/* 2. MAIN FOOTER CONTENT - RESTORED ORIGINAL BRANDING */}
             <div className="max-w-[1200px] mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
-                    
+
                     {/* Left Column: Logo & Contact */}
                     <div className="lg:col-span-4">
                         <Link to="/" className="inline-block mb-8 group">
@@ -83,19 +83,47 @@ const Footer = () => {
 
                     {/* Middle Column: Find it Fast */}
                     <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        {/* Column 1 */}
                         <div>
                             <h4 className="text-lg font-bold text-[#333e48] mb-6">Find it Fast</h4>
                             <ul className="space-y-3 text-sm text-gray-600">
-                                {['Laptops & Computers', 'Cameras & Photography', 'Smart Phones & Tablets', 'Video Games & Consoles', 'TV & Audio', 'Gadgets', 'Car Electronic & GPS'].map(item => (
-                                    <li key={item}><Link to="/" className="hover:text-[#1e1c13]">{item}</Link></li>
-                                ))}
+                                <li>
+                                    <Link to="/category/69d5d89d456ed47be418a903" className="hover:text-[#1e1c13]">Laptops & Computers</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/69d5d89d456ed47be418a904" className="hover:text-[#1e1c13]">Cameras & Photography</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/69d5d89d456ed47be418a905" className="hover:text-[#1e1c13]">Smart Phones & Tablets</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/69d5d89d456ed47be418a906" className="hover:text-[#1e1c13]">Video Games & Consoles</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/69d5d89d456ed47be418a907" className="hover:text-[#1e1c13]">TV & Audio</Link>
+                                </li>
+                               
                             </ul>
                         </div>
-                        <div className="mt-12">
-                            <ul className="space-y-3 text-sm text-gray-600">
-                                {['Printers & Ink', 'Software', 'Office Supplies', 'Computer Components', 'Accessories'].map(item => (
-                                    <li key={item}><Link to="/" className="hover:text-[#1e1c13]">{item}</Link></li>
-                                ))}
+
+                        {/* Column 2 */}
+                        <div className="mt-12 sm:mt-0">
+                            <ul className="space-y-3 text-sm text-gray-600 sm:pt-[52px]">
+                                <li>
+                                    <Link to="/category/LINK_8" className="hover:text-[#1e1c13]">Printers & Ink</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/LINK_9" className="hover:text-[#1e1c13]">Software</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/LINK_10" className="hover:text-[#1e1c13]">Office Supplies</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/LINK_11" className="hover:text-[#1e1c13]">Computer Components</Link>
+                                </li>
+                                <li>
+                                    <Link to="/category/LINK_12" className="hover:text-[#1e1c13]">Accessories</Link>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -120,7 +148,7 @@ const Footer = () => {
                     <p className="text-sm text-gray-600">
                         &copy; <span className="font-bold text-[#333e48]">Miazi</span> - All rights Reserved
                     </p>
-                    
+
                     <div className="flex gap-2 items-center">
                         <FaCcVisa size={32} className="text-gray-400 hover:text-[#1a1f71] cursor-pointer bg-white rounded p-1" />
                         <FaCcMastercard size={32} className="text-gray-400 hover:text-[#eb001b] cursor-pointer bg-white rounded p-1" />
@@ -130,7 +158,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <button 
+                <button
                     onClick={scrollToTop}
                     className="absolute right-6 -top-5 bg-[#fed700] p-3 shadow-lg hover:bg-[#333e48] hover:text-white transition-all rounded-sm group"
                 >
