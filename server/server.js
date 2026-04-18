@@ -26,6 +26,13 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 logger.info('🚀 [Server] Initializing database connection...');
 connectDB();
 
+// Verification of Cloudinary setup
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
+    logger.error('❌ [Server] CLOUDINARY configuration is MISSING! Uploads will fail.');
+} else {
+    logger.info('✅ [Server] CLOUDINARY configuration detected.');
+}
+
 const app = express();
 
 // Database connection - top-level call handles it

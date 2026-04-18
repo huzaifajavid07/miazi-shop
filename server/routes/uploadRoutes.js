@@ -18,6 +18,14 @@ router.get('/signature', (req, res) => {
         // This folder MUST match where the frontend tells Cloudinary it is uploading to
         const folder = req.query.folder || 'products/images';
         
+        // Safety Check: Verify configuration exists
+        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+            return res.status(500).json({ 
+                message: 'Cloudinary is not configured on the server. Please check environment variables.',
+                isConfigured: false 
+            });
+        }
+
         const signature = cloudinary.utils.api_sign_request({
             timestamp: timestamp,
             folder: folder,
