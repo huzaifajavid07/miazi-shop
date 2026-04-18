@@ -127,8 +127,8 @@ const HomePage = () => {
                       <div className="flex items-baseline gap-2 mb-8 justify-center md:justify-start">
                         <p className="text-2xl font-black text-gray-800 uppercase tracking-tighter">FROM ৳{slide.price}<sup className="text-sm ml-0.5">.99</sup></p>
                       </div>
-                      <button className="bg-yellow-400 text-gray-800 font-bold px-10 py-4 rounded-full hover:bg-gray-800 hover:text-white transition-all shadow-xl shadow-yellow-100">
-                        Discovery Now
+                      <button onClick={() => document.getElementById('shop-section')?.scrollIntoView({ behavior: 'smooth' })} className="bg-yellow-400 text-gray-800 font-bold px-10 py-4 rounded-full hover:bg-gray-800 hover:text-white transition-all shadow-xl shadow-yellow-100">
+                        Discover Now
                       </button>
                     </div>
                     <div className="flex-1 flex justify-center py-4 md:py-8 relative group w-full">
@@ -207,10 +207,10 @@ const HomePage = () => {
                   <div className="relative mb-4">
                     <img src="/gamepad.png" alt="Game Console" className="w-full h-48 object-contain" onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=300&q=80'} />
                   </div>
-                  <p className="text-xs text-blue-600 font-medium mb-1">Game Console Controller</p>
+                  <p className="text-xs text-slate-800 font-medium mb-1">Game Console Controller</p>
                   <div className="flex items-center justify-center gap-2 mb-3">
-                    <span className="text-gray-400 line-through text-sm">$99.00</span>
-                    <span className="text-red-600 font-bold text-xl">$79.00</span>
+                    <span className="text-gray-400 line-through text-sm">৳9,900</span>
+                    <span className="text-red-600 font-bold text-xl">৳7,900</span>
                   </div>
                   <div className="flex justify-center gap-2 mb-4">
                     {[{ val: formatTime(timeLeft.hours), label: 'HOURS' }, { val: formatTime(timeLeft.minutes), label: 'MINS' }, { val: formatTime(timeLeft.seconds), label: 'SECS' }].map((item, idx) => (
@@ -242,16 +242,37 @@ const HomePage = () => {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
               </div>
-            ) : (
+            ) : (() => {
+              let filtered = [...products];
+              if (activeTab === 'On Sale') {
+                filtered = filtered.filter(p => p.discountPrice > 0 || p.countInStock > 10).sort((a, b) => b.countInStock - a.countInStock);
+              } else if (activeTab === 'Top Rated') {
+                filtered = filtered.sort((a, b) => b.rating - a.rating);
+              } else {
+                filtered = filtered.sort((a, b) => b.numReviews - a.numReviews);
+              }
+              const display = filtered.slice(0, 8);
+
+              if (keyword && products.length === 0) {
+                return (
+                  <div className="col-span-full text-center py-20">
+                    <Search size={48} className="mx-auto text-gray-200 mb-4" />
+                    <h3 className="text-lg font-bold text-gray-600 mb-2">No Products Found</h3>
+                    <p className="text-sm text-gray-400">We couldn't find anything matching "{keyword}". Try a different search.</p>
+                  </div>
+                );
+              }
+
+              return (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {products.slice(0, 8).map((p) => (
+                {display.map((p) => (
                   <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
                     <div className="relative bg-gray-50 p-4 aspect-square">
                       <img src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/300x300'} alt={p.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" />
                       
                       {/* ADD TO CART BUTTON */}
                       <button 
-                        onClick={() => addToCartHandler(p)}
+                        onClick={(e) => { e.preventDefault(); addToCartHandler(p); }}
                         className="absolute bottom-2 right-2 w-8 h-8 bg-yellow-400 rounded-full shadow flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white"
                       >
                         <Plus className="w-5 h-5" />
@@ -260,16 +281,17 @@ const HomePage = () => {
                     <div className="p-3">
                       <p className="text-[10px] text-gray-400 uppercase mb-1">{p.category?.name || 'Electronics'}</p>
                       <Link to={`/product/${p.slug}`}>
-                        <h3 className="text-sm font-medium text-blue-600 hover:underline line-clamp-2 mb-2 min-h-[2.5rem]">{p.name}</h3>
+                        <h3 className="text-sm font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors">{p.name}</h3>
                       </Link>
                       <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-gray-800">${p.price}</span>
+                        <span className="text-lg font-bold text-gray-800">৳{p.price?.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
+              );
+            })()}
           </div>
         </div>
       </section>
@@ -302,9 +324,9 @@ const HomePage = () => {
                   </button>
                 </div>
                 <Link to={`/product/${p.slug}`}>
-                  <h4 className="text-xs font-medium text-blue-600 hover:underline line-clamp-2 mb-1">{p.name}</h4>
+                  <h4 className="text-xs font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-1 transition-colors">{p.name}</h4>
                 </Link>
-                <p className="text-sm font-bold text-gray-800">${p.price}</p>
+                <p className="text-sm font-bold text-gray-800">৳{p.price?.toLocaleString()}</p>
               </div>
             ))}
           </div>

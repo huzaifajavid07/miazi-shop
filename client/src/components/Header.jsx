@@ -75,7 +75,7 @@ const Header = () => {
 
     const logoutHandler = () => {
         dispatch(logout());
-        navigate('/login');
+        navigate('/');
         toast.info('Signed out successfully.');
     };
 
@@ -96,17 +96,17 @@ const Header = () => {
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center py-2 text-[12px] text-gray-500">
                     <div>Welcome to Worldwide Electronics Store</div>
                     <div className="flex items-center gap-4">
-                        <Link to="#" className="flex items-center gap-1 hover:text-yellow-500"><MapPin size={14} /> Store Locator</Link>
+                        <a href="https://www.google.com/maps?q=23.4055098,90.739426" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-yellow-500"><MapPin size={14} /> Store Locator</a>
                         <span className="text-gray-200">|</span>
                         <Link to="/myorders" className="flex items-center gap-1 hover:text-yellow-500"><Truck size={14} /> Track Your Order</Link>
                         <span className="text-gray-200">|</span>
-                        <div className="flex items-center gap-1">Dollar (US) <ChevronDown size={10} /></div>
+                        <div className="flex items-center gap-1">BDT (Taka) <ChevronDown size={10} /></div>
                         <span className="text-gray-200">|</span>
                         {userInfo ? (
                             <div className="flex items-center gap-2">
                                 <span className="text-yellow-500 font-bold">{userInfo.email}</span>
                                 <span className="text-gray-200">|</span>
-                                <button onClick={logoutHandler} className="hover:text-yellow-500 font-bold">Logout</button>
+                                <button onClick={logoutHandler} className="hover:text-yellow-500 font-bold">Sign Out</button>
                             </div>
                         ) : (
                             <Link to="/login" className="hover:text-yellow-600 font-bold transition-colors">Register or Sign in</Link>
@@ -224,7 +224,7 @@ const Header = () => {
                         )}
                     </button>
 
-                    <RefreshCw size={22} className="cursor-pointer hover:text-yellow-500" />
+                    <RefreshCw size={22} className="cursor-pointer hover:text-yellow-500" onClick={() => window.location.reload()} />
                     <div className="relative flex items-center gap-4">
                         {userInfo && userInfo.isAdmin && (
                             <Link to="/admin/dashboard" className="hidden lg:flex items-center gap-2 bg-gray-800 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest hover:bg-yellow-500 transition-colors shadow-lg">
@@ -286,8 +286,8 @@ const Header = () => {
                     </div>
 
                     <nav className="flex-1 flex items-center gap-8 px-8 h-full">
-                        <Link to="/" className="text-sm font-bold text-gray-700 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px]">Products Inventory</Link>
-                        <Link to="/" className="text-sm font-bold text-gray-700 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px]">Featured Brands</Link>
+                        <a href="/#shop-section" className="text-sm font-bold text-gray-700 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px]">Products Inventory</a>
+                        <a href="/#shop-section" className="text-sm font-bold text-gray-700 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px]">Featured Brands</a>
                     </nav>
                 </div>
             </div>
@@ -301,8 +301,8 @@ const Header = () => {
             <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[1001] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0">
                     <div>
-                        <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 leading-none">Broadcast Center</h3>
-                        <p className="text-[10px] text-gray-800 font-bold mt-1.5 opacity-80">{notifications.length} Announcements Active</p>
+                        <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 leading-none">Notifications</h3>
+                        <p className="text-[10px] text-gray-800 font-bold mt-1.5 opacity-80">{notifications.length} Updates</p>
                     </div>
                     <button onClick={() => setIsNotifOpen(false)} className="p-2 hover:bg-black/10 rounded-full transition-colors text-gray-900">
                         <CloseIcon size={20} />
@@ -337,8 +337,8 @@ const Header = () => {
                             <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6 border border-slate-100/50">
                                 <Bell size={32} className="text-slate-300" />
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 font-sans">Registry Quiet</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">No new broadcasts found</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 font-sans">All Clear</p>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">No new notifications</p>
                         </div>
                     )}
                 </div>
@@ -351,8 +351,8 @@ const Header = () => {
             <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[1001] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isUserDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0 text-gray-900">
                     <div>
-                        <h3 className="text-sm font-black uppercase tracking-[0.2em] leading-none">Account Control</h3>
-                        <p className="text-[10px] font-bold mt-1.5 opacity-80">Secure Operating Portal</p>
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] leading-none">My Account</h3>
+                        <p className="text-[10px] font-bold mt-1.5 opacity-80">Manage Your Profile</p>
                     </div>
                     <button onClick={() => setIsUserDrawerOpen(false)} className="p-2 hover:bg-black/10 rounded-full transition-colors">
                         <CloseIcon size={20} />
@@ -365,7 +365,7 @@ const Header = () => {
                                 {userInfo.email.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-none mb-2">Identified Operator</p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-none mb-2">Signed In As</p>
                                 <p className="text-sm font-black text-slate-800 truncate px-4">{userInfo.email}</p>
                             </div>
                          </div>
@@ -374,7 +374,7 @@ const Header = () => {
                             <div className="w-24 h-24 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto border-4 border-dashed border-gray-200">
                                 <User size={40} />
                             </div>
-                            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Restricted Protocol Access</p>
+                            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Guest User</p>
                         </div>
                     )}
                 </div>
@@ -419,7 +419,7 @@ const Header = () => {
                 </div>
                 {userInfo && (
                     <div className="p-8 border-t border-gray-50 bg-slate-50">
-                        <button onClick={() => { setIsUserDrawerOpen(false); logoutHandler(); }} className="w-full py-4 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-100">Terminate Session</button>
+                        <button onClick={() => { setIsUserDrawerOpen(false); logoutHandler(); }} className="w-full py-4 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-100">Sign Out</button>
                     </div>
                 )}
             </div>
@@ -430,7 +430,7 @@ const Header = () => {
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsMobileMenuOpen(false)} />
                     <div className="absolute top-0 left-0 h-full w-80 bg-white shadow-2xl flex flex-col transform transition-transform duration-300 overflow-hidden">
                         <div className="p-6 border-b border-gray-100 bg-yellow-400 flex justify-between items-center text-gray-900">
-                            <span className="text-xs font-black uppercase tracking-[0.2em]">Nav Manifest</span>
+                            <span className="text-xs font-black uppercase tracking-[0.2em]">Menu</span>
                             <button onClick={() => setIsMobileMenuOpen(false)}>
                                 <CloseIcon size={20} />
                             </button>
@@ -507,7 +507,7 @@ const Header = () => {
                         <div className="p-2 rounded-2xl text-slate-400">
                             <User size={20} />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Portal</span>
+                        <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Account</span>
                     </button>
                 </div>
             )}

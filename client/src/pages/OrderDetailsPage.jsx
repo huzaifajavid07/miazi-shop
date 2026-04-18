@@ -55,11 +55,11 @@ const OrderDetailsPage = () => {
         <div className="bg-electro-bg min-h-screen pb-32">
             <div className="bg-white border-b border-gray-100 shadow-sm mb-16">
                 <div className="container-custom py-5 flex items-center gap-3 text-[10px] md:text-sm text-gray-400">
-                    <Link to="/" className="hover:text-electro-blue transition-colors uppercase font-black tracking-widest leading-none">Catalog</Link>
+                    <Link to="/" className="hover:text-yellow-500 transition-colors uppercase font-black tracking-widest leading-none">Home</Link>
                     <ChevronRight size={14} className="opacity-30" />
-                    <Link to="/myorders" className="hover:text-electro-blue transition-colors uppercase font-black tracking-widest leading-none">Deployment History</Link>
+                    <Link to="/myorders" className="hover:text-yellow-500 transition-colors uppercase font-black tracking-widest leading-none">My Orders</Link>
                     <ChevronRight size={14} className="opacity-30" />
-                    <span className="text-electro-dark font-black uppercase tracking-widest border-b-2 border-electro-yellow leading-none">Registry Snapshot</span>
+                    <span className="text-electro-dark font-black uppercase tracking-widest border-b-2 border-electro-yellow leading-none">Order Details</span>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@ const OrderDetailsPage = () => {
                            <Package size={36} className="group-hover:scale-110 transition-transform duration-700" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-2">Registry Identifier</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-2">Order ID</p>
                             <h1 className="text-3xl md:text-4xl font-black text-electro-dark tracking-tighter uppercase font-display">#{order._id.toUpperCase()}</h1>
                         </div>
                     </div>
@@ -82,9 +82,9 @@ const OrderDetailsPage = () => {
                             {order.isPaid ? <CheckCircle2 size={16} /> : <Clock size={16} />}
                             {order.isPaid ? `Payment Authorized: ${new Date(order.paidAt).toLocaleDateString()}` : 'Payment Verification Pending'}
                         </div>
-                        <div className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 border-2 transition-all duration-700 ${order.isDelivered ? 'bg-blue-50 border-blue-100 text-electro-blue shadow-lg shadow-blue-100/50' : 'bg-yellow-50 border-yellow-100 text-electro-dark shadow-lg shadow-yellow-100/20'}`}>
+                        <div className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 border-2 transition-all duration-700 ${order.isDelivered ? 'bg-emerald-50 border-emerald-100 text-emerald-600 shadow-lg shadow-emerald-100/50' : 'bg-yellow-50 border-yellow-100 text-electro-dark shadow-lg shadow-yellow-100/20'}`}>
                            <Truck size={16} className={!order.isDelivered ? 'animate-bounce' : ''} />
-                           {order.isDelivered ? `Decommissioned: ${new Date(order.deliveredAt).toLocaleDateString()}` : 'In Deployment Pipeline'}
+                           {order.isDelivered ? `Delivered: ${new Date(order.deliveredAt).toLocaleDateString()}` : 'In Transit'}
                         </div>
                     </div>
                 </div>
@@ -96,27 +96,27 @@ const OrderDetailsPage = () => {
                         
                         {/* CUSTOMER INFO LEDGER - ELECTRO STYLE */}
                         <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl overflow-hidden relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-electro-blue/5 rounded-bl-full"></div>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/5 rounded-bl-full"></div>
                             
                             <div className="bg-slate-50 px-10 py-6 border-b border-gray-100">
                                 <h2 className="text-2xl font-black text-electro-dark flex items-center gap-4 uppercase tracking-tighter font-display">
-                                   <Receipt size={24} className="text-electro-blue" /> Logistics <span className="text-electro-yellow">Metadata</span>
+                                   <Receipt size={24} className="text-yellow-500" /> Order <span className="text-yellow-500">Details</span>
                                 </h2>
                             </div>
                             <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
                                 <div className="space-y-6">
                                     <div className="flex items-start gap-5 group">
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><User size={20} /></div>
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-yellow-400 group-hover:text-slate-900 transition-all"><User size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Authorized Recipient</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Customer Name</p>
                                             <p className="text-lg font-black text-electro-dark font-display">{order.user.name}</p>
-                                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-tight opacity-60">ID: {order.user.email}</p>
+                                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-tight opacity-60">{order.user.email}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-5 group">
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><MapPin size={20} /></div>
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-yellow-400 group-hover:text-slate-900 transition-all"><MapPin size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Deployment Coordinates</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Shipping Address</p>
                                             <p className="text-base font-black text-electro-dark leading-relaxed font-display">
                                                 {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                                             </p>
@@ -135,15 +135,14 @@ const OrderDetailsPage = () => {
                                 </div>
                                 <div className="space-y-6">
                                     <div className="flex items-start gap-5 group">
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><Calendar size={20} /></div>
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-yellow-400 group-hover:text-slate-900 transition-all"><Calendar size={20} /></div>
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Registry Initialized</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Date Placed</p>
                                             <p className="text-lg font-black text-electro-dark font-display">{new Date(order.createdAt).toLocaleString()}</p>
-                                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1 opacity-40">TIMESTAMP_VERIFIED</p>
                                         </div>
                                     </div>
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Financial Protocol</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Payment Method</p>
                                             <p className="text-lg font-black text-electro-dark font-display">{order.paymentMethod}</p>
                                             {order.paymentScreenshot && (
                                                 <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-gray-100">
@@ -166,10 +165,10 @@ const OrderDetailsPage = () => {
                             <table className="w-full text-left min-w-[600px]">
                                 <thead>
                                     <tr className="bg-slate-50 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] border-b border-gray-100">
-                                        <th className="py-8 px-10">Hardware Registry</th>
-                                        <th className="py-8 px-10 text-center">Unit Value</th>
-                                        <th className="py-8 px-10 text-center">Deployment Qty</th>
-                                        <th className="py-8 px-10 text-right">Registry Subtotal</th>
+                                        <th className="py-8 px-10">Product</th>
+                                        <th className="py-8 px-10 text-center">Unit Price</th>
+                                        <th className="py-8 px-10 text-center">Quantity</th>
+                                        <th className="py-8 px-10 text-right">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
@@ -180,7 +179,7 @@ const OrderDetailsPage = () => {
                                                     <div className="w-20 h-20 bg-white border border-gray-100 rounded-2xl p-3 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-700 relative shadow-sm">
                                                         <img src={item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-sm" />
                                                     </div>
-                                                    <Link to={`/product/${item.slug}`} className="text-lg font-black text-electro-dark hover:text-electro-blue transition-colors line-clamp-2 uppercase font-display tracking-tight leading-none">{item.name}</Link>
+                                                    <Link to={`/product/${item.slug}`} className="text-lg font-black text-electro-dark hover:text-yellow-500 transition-colors line-clamp-2 uppercase font-display tracking-tight leading-none">{item.name}</Link>
                                                 </div>
                                             </td>
                                             <td className="py-10 px-10 text-center text-sm font-black text-gray-400 font-mono">৳{item.price.toLocaleString()}</td>
@@ -203,24 +202,24 @@ const OrderDetailsPage = () => {
                             <div className="absolute top-0 right-10 w-20 h-1 bg-electro-yellow shadow-[0_0_20px_#fed700] rounded-b-full"></div>
 
                             <h2 className="text-3xl font-black text-white tracking-tighter mb-12 pb-8 border-b border-white/5 uppercase font-display flex items-center gap-5">
-                                <Receipt size={28} className="text-electro-yellow" /> Final <span className="text-electro-yellow">Ledger</span>
+                                <Receipt size={28} className="text-electro-yellow" /> Order <span className="text-electro-yellow">Total</span>
                             </h2>
                             
                             <div className="space-y-8 mb-16">
                                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
-                                    <span>Inventory Value</span>
+                                    <span>Items Total</span>
                                     <span className="text-white text-sm font-display">৳{order.itemsPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
-                                    <span>Logistics Surcharge</span>
+                                    <span>Delivery Charge</span>
                                     <span className="text-white text-sm font-display">৳{order.shippingPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
-                                    <span>Protocol Tax</span>
+                                    <span>Service Fee</span>
                                     <span className="text-white text-sm font-display">৳{order.taxPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="pt-10 border-t border-white/5 flex flex-col gap-5">
-                                    <p className="text-[10px] font-black text-electro-blue uppercase tracking-[0.4em]">AUTHORIZED TOTAL DEBIT</p>
+                                    <p className="text-[10px] font-black text-electro-yellow uppercase tracking-[0.4em]">GRAND TOTAL</p>
                                     <div className="flex justify-between items-end">
                                         <p className="text-5xl md:text-6xl font-black text-electro-yellow tracking-tighter leading-none shadow-[0_0_30px_rgba(254,215,0,0.15)] font-display">৳{order.totalPrice.toLocaleString()}</p>
                                         <Zap size={32} className="text-electro-yellow fill-electro-yellow mb-1 animate-pulse" />

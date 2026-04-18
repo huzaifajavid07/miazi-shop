@@ -105,7 +105,9 @@ const Footer = () => {
                         <h4 className="text-lg font-bold text-[#333e48] mb-6">Customer Care</h4>
                         <ul className="space-y-3 text-sm text-gray-600">
                             {['My Account', 'Order Tracking', 'Wish List', 'Customer Service', 'Returns / Exchange', 'FAQs', 'Product Support'].map(item => (
-                                <li key={item}><Link to="/" className="hover:text-[#1e1c13]">{item}</Link></li>
+                                <li key={item}>
+                                    <Link to={item === 'My Account' ? '/profile' : item === 'Order Tracking' ? '/myorders' : '/'} className="hover:text-[#1e1c13]">{item}</Link>
+                                </li>
                             ))}
                         </ul>
                     </div>

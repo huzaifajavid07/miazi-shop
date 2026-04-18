@@ -95,7 +95,7 @@ const CategoryPage = () => {
                                         <div className="p-3">
                                             <p className="text-[10px] text-gray-400 uppercase mb-1">{p.category?.name || 'Electronics'}</p>
                                             <Link to={`/product/${p.slug}`}>
-                                                <h3 className="text-sm font-medium text-blue-600 hover:underline line-clamp-2 mb-2 min-h-[2.5rem]">{p.name}</h3>
+                                                <h3 className="text-sm font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors">{p.name}</h3>
                                             </Link>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-lg font-bold text-gray-800">৳{p.price?.toLocaleString()}</span>

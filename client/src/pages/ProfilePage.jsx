@@ -67,7 +67,7 @@ const ProfilePage = () => {
                                 <button 
                                     onClick={() => {
                                         dispatch(logout());
-                                        navigate('/login');
+                                        navigate('/');
                                     }}
                                     className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all w-fit"
                                 >
@@ -86,16 +86,16 @@ const ProfilePage = () => {
                         <Package size={20} />
                     </div>
                     <div>
-                        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Order Registry</h2>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Deployment Tracking & History</p>
+                        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Order History</h2>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Your Past Purchases</p>
                     </div>
                 </div>
 
                 {orders.length === 0 ? (
                     <div className="bg-white border border-gray-100 rounded-3xl p-20 text-center shadow-sm">
-                        <p className="text-xs font-black text-gray-300 uppercase tracking-widest mb-2">Registry Empty</p>
-                        <p className="text-sm text-gray-400">No previous order history found in our database.</p>
-                        <Link to="/" className="mt-8 inline-block px-10 py-3 bg-yellow-400 text-slate-900 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform">Initialize Acquisition</Link>
+                        <p className="text-xs font-black text-gray-300 uppercase tracking-widest mb-2">No Orders Yet</p>
+                        <p className="text-sm text-gray-400">You haven't placed any orders yet.</p>
+                        <Link to="/" className="mt-8 inline-block px-10 py-3 bg-yellow-400 text-slate-900 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform">Start Shopping</Link>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-6">
@@ -104,7 +104,7 @@ const ProfilePage = () => {
                                 <div className="flex flex-col md:flex-row justify-between gap-6 relative z-10">
                                     <div className="space-y-4">
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Deployment ID</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Order ID</p>
                                             <h3 className="font-black text-slate-800 tracking-tighter text-lg uppercase">#{order._id}</h3>
                                         </div>
                                         <div className="flex flex-wrap gap-4">
