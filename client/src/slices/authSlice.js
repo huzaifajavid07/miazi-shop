@@ -50,7 +50,17 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (googleDat
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });
-
+export const updateProfile = createAsyncThunk('auth/updateProfile', async (userData, { rejectWithValue }) => {
+    try {
+        const response = await api.put('/api/users/profile', userData);
+        localStorage.setItem('userInfo', JSON.stringify(response.data));
+        toast.success('Profile Updated Successfully');
+        return response.data;
+    } catch (error) {
+        toast.error(error.response?.data?.message || error.message);
+        return rejectWithValue(error.response?.data?.message || error.message);
+    }
+});
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
@@ -106,6 +116,19 @@ const authSlice = createSlice({
                 state.userInfo = action.payload;
             })
             .addCase(googleLogin.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // Update Profile
+            .addCase(updateProfile.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateProfile.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userInfo = action.payload;
+            })
+            .addCase(updateProfile.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

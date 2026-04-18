@@ -8,9 +8,11 @@ import {
     ShoppingBag, Search, Menu, User, MapPin,
     Truck, RefreshCw, Heart, ChevronDown, LayoutDashboard,
     Bell, Check, X as CloseIcon, Info, AlertTriangle, ChevronRight,
-    Trash2
+    Trash2, Camera
 } from 'lucide-react';
 import { fetchNotifications, resetCount, deleteNotification } from '../slices/notificationSlice';
+import { updateProfile } from '../slices/authSlice';
+import { uploadToCloudinaryDirect } from '../utils/cloudinary';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../utils/axiosConfig';
 
@@ -23,6 +25,28 @@ const Header = () => {
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+
+    const handleAvatarUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image must be less than 5MB');
+            return;
+        }
+
+        setIsAvatarUploading(true);
+        try {
+            const secureUrl = await uploadToCloudinaryDirect(file, 'profile/avatars');
+            await dispatch(updateProfile({ avatar: secureUrl })).unwrap();
+            toast.success('Profile picture updated!');
+        } catch (err) {
+            toast.error(err.message || 'Avatar upload failed');
+        } finally {
+            setIsAvatarUploading(false);
+        }
+    };
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -360,15 +384,25 @@ const Header = () => {
                 </div>
                 <div className="p-10 border-b border-gray-50 bg-slate-50/50 text-center">
                     {userInfo ? (
-                         <div className="space-y-4">
-                            <div className="w-24 h-24 bg-yellow-400 rounded-[2.5rem] flex items-center justify-center text-slate-900 font-black text-4xl mx-auto shadow-2xl border-4 border-white rotate-3">
-                                {userInfo.email.charAt(0).toUpperCase()}
+                        <div className="space-y-4">
+                            <div className="relative w-24 h-24 mx-auto group">
+                                <div className="w-24 h-24 bg-yellow-400 rounded-[2.5rem] flex items-center justify-center text-slate-900 font-black text-4xl shadow-2xl border-4 border-white rotate-3 overflow-hidden">
+                                    {userInfo.avatar ? (
+                                        <img src={userInfo.avatar} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        userInfo.email.charAt(0).toUpperCase()
+                                    )}
+                                </div>
+                                <label className={`absolute bottom-0 right-0 p-2 bg-slate-900 text-yellow-400 rounded-2xl border-4 border-white cursor-pointer shadow-lg hover:bg-yellow-400 hover:text-slate-900 transition-all ${isAvatarUploading ? 'animate-pulse opacity-50 pointer-events-none' : ''}`}>
+                                    <Camera size={16} />
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isAvatarUploading} />
+                                </label>
                             </div>
                             <div>
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-none mb-2">Signed In As</p>
                                 <p className="text-sm font-black text-slate-800 truncate px-4">{userInfo.email}</p>
                             </div>
-                         </div>
+                        </div>
                     ) : (
                         <div className="space-y-6">
                             <div className="w-24 h-24 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto border-4 border-dashed border-gray-200">

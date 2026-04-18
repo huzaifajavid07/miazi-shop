@@ -49,14 +49,16 @@ const PlaceOrderPage = () => {
         ? calculateDistance(storeLocation.lat, storeLocation.lng, cart.shippingAddress.lat, cart.shippingAddress.lng)
         : null;
 
-    // Unified Shipping Price Calculation
-    // Logic: 5 BDT per KM, min 60 BDT. Fallback to 120 BDT if no GPS.
-    const shippingPrice = userDistance 
-        ? Math.max(60, Math.round(userDistance * 5)) 
-        : 150; // Increased fallback for manual entry failures to safe 150 BDT
+    // Distance-based shipping fee brackets
+    const calculateShippingFee = (distance) => {
+        if (distance === null || distance === undefined) return 150; // Manual entry fallback
+        if (distance <= 10) return 50;
+        if (distance <= 20) return 80;
+        if (distance <= 30) return 120;
+        return 150; // Premium delivery for long distances (>30km)
+    };
 
-    // Calculate prices
-    const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const shippingPrice = calculateShippingFee(userDistance);
     const codSurcharge = paymentMethod === 'COD' ? Math.round(0.03 * itemsPrice) : 0;
     const totalPrice = itemsPrice + shippingPrice + codSurcharge;
 

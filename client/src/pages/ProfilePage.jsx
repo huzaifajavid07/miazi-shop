@@ -7,13 +7,38 @@ import {
     Loader, Package, Mail, Calendar, 
     CreditCard, ChevronRight, Eye, Info, 
     Clock, CheckCircle2, User, Truck,
-    LogOut, RefreshCw
+    LogOut, RefreshCw, Camera
 } from 'lucide-react';
+import { updateProfile } from '../slices/authSlice';
+import { uploadToCloudinaryDirect } from '../utils/cloudinary';
+import { toast } from 'react-toastify';
 
 const ProfilePage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+
+    const handleAvatarUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image must be less than 5MB');
+            return;
+        }
+
+        setIsAvatarUploading(true);
+        try {
+            const secureUrl = await uploadToCloudinaryDirect(file, 'profile/avatars');
+            await dispatch(updateProfile({ avatar: secureUrl })).unwrap();
+            toast.success('Profile picture updated!');
+        } catch (err) {
+            toast.error(err.message || 'Avatar upload failed');
+        } finally {
+            setIsAvatarUploading(false);
+        }
+    };
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -52,12 +77,22 @@ const ProfilePage = () => {
             <div className="bg-white border-b border-gray-100 shadow-sm relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-yellow-400 rounded-3xl flex items-center justify-center text-slate-900 font-black text-3xl shadow-2xl shadow-yellow-100 border-4 border-white">
-                            {userInfo?.email ? userInfo.email.charAt(0).toUpperCase() : 'U'}
+                        <div className="relative group">
+                            <div className="w-24 h-24 bg-yellow-400 rounded-3xl flex items-center justify-center text-slate-900 font-black text-3xl shadow-2xl shadow-yellow-100 border-4 border-white overflow-hidden">
+                                {userInfo?.avatar ? (
+                                    <img src={userInfo.avatar} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    userInfo?.email ? userInfo.email.charAt(0).toUpperCase() : 'U'
+                                )}
+                            </div>
+                            <label className={`absolute -bottom-2 -right-2 p-2.5 bg-slate-900 text-yellow-400 rounded-2xl border-4 border-white cursor-pointer shadow-xl hover:bg-yellow-400 hover:text-slate-900 transition-all ${isAvatarUploading ? 'animate-pulse opacity-50 pointer-events-none' : ''}`}>
+                                <Camera size={18} />
+                                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isAvatarUploading} />
+                            </label>
                         </div>
                         <div>
                             <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                                <User size={24} className="text-yellow-500" /> User Profile
+                                User Profile
                             </h1>
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-2">
                                 <div className="flex items-center gap-2 text-gray-500">
