@@ -79,7 +79,7 @@ const CartPage = () => {
                                                 <div className="flex-1 min-w-0">
                                                     <Link to={`/product/${item.slug}`} className="text-sm md:text-base font-black text-slate-800 hover:text-blue-600 transition-colors line-clamp-1 uppercase tracking-tight">{item.name}</Link>
                                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">/{item.category?.name || 'Item'}</p>
-                                                    <button onClick={() => removeFromCartHandler(item._id)} className="mt-2 md:mt-4 text-[10px] font-black text-red-500 uppercase flex items-center gap-1.5 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-full w-max transition-colors">
+                                                    <button onClick={() => removeFromCartHandler(item._id)} className="mt-2 md:mt-4 text-[10px] font-black text-red-500 uppercase flex items-center gap-1.5 hover:text-red-700 px-3 py-1.5 rounded-full w-max transition-colors">
                                                         <Trash2 size={12} /> Remove Item
                                                     </button>
                                                 </div>
@@ -144,7 +144,7 @@ const CartPage = () => {
                                     <span className="text-2xl font-bold text-gray-800">৳{cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toLocaleString()}</span>
                                 </div>
                             </div>
-                            <div className="p-6 bg-gray-50">
+                            <div className="p-6 bg-gray-50 pb-10" >
                                 <button 
                                     onClick={checkoutHandler}
                                     className="btn-electro w-full h-12 uppercase"

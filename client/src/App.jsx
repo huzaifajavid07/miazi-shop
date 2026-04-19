@@ -21,6 +21,7 @@ import OrderDetailsPage from './pages/OrderDetailsPage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import ContactPage from './pages/ContactPage';
 
 function App() {
     return (
@@ -44,8 +45,10 @@ function App() {
                         <Route path="/myorders" element={<MyOrdersPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+                        
                     </Routes>
                 </main>
+                <ContactPage />
                 <Footer />
                 <ToastContainer position="bottom-right" autoClose={3000} />
             </div>

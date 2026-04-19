@@ -82,14 +82,22 @@ const ProductDetailsPage = () => {
         <div className="bg-gray-50 min-h-screen pb-20">
             {/* Breadcrumb */}
             <div className="bg-white border-b border-gray-200 mb-8">
-                <div className="container-custom py-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
-                    <Link to="/" className="hover:text-yellow-500">Home</Link>
-                    <ChevronRight size={14} />
-                    <Link to={`/?category=${product.category?.name}`} className="hover:text-yellow-500">{product.category?.name}</Link>
-                    <ChevronRight size={14} />
-                    <span className="text-slate-800">{product.name}</span>
-                </div>
-            </div>
+    <div className="container-custom py-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
+        <Link to="/" className="hover:text-yellow-500">Home</Link>
+        <ChevronRight size={14} />
+        
+        {/* Link updated to use the ID-based route */}
+        <Link 
+            to={`/category/${product.category?._id}`} 
+            className="hover:text-yellow-500"
+        >
+            {product.category?.name}
+        </Link>
+        
+        <ChevronRight size={14} />
+        <span className="text-slate-800">{product.name}</span>
+    </div>
+</div>
 
             <div className="container-custom">
                 <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 md:p-12 mb-10 overflow-hidden">
@@ -201,7 +209,7 @@ const ProductDetailsPage = () => {
                                     <div className="flex flex-col sm:flex-row gap-3">
                                         <button 
                                             onClick={addToCartHandler}
-                                            className="flex-1 h-12 bg-yellow-400 text-gray-800 font-bold rounded-full flex items-center justify-center gap-2 hover:bg-yellow-500 transition-colors text-sm"
+                                            className="flex-2 h-12 bg-yellow-400 text-gray-800 font-bold rounded-full flex items-center justify-center gap-2 hover:bg-yellow-500 transition-colors text-sm py-2"
                                         >
                                             <ShoppingBag size={18} /> Add to Cart
                                         </button>
@@ -210,7 +218,7 @@ const ProductDetailsPage = () => {
                                                 dispatch(addToCart({ ...product, qty }));
                                                 navigate('/shipping');
                                             }}
-                                            className="flex-1 h-12 bg-gray-800 text-white font-bold rounded-full flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors text-sm"
+                                            className="flex-1 h-12 bg-gray-800 text-white font-bold rounded-full flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors text-sm py-2"
                                         >
                                              Buy Now
                                         </button>

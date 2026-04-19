@@ -25,11 +25,37 @@ const MyOrdersPage = () => {
             }
         };
 
+        // Only fetch if userInfo exists
         if (userInfo) {
             fetchOrders();
         }
     }, [userInfo]);
 
+    // NEW: Guard Clause for Unauthenticated Users
+    if (!userInfo) {
+        return (
+            <div className="container-custom py-32 text-center">
+                <div className="bg-white border border-gray-200 rounded-3xl p-12 md:p-20 shadow-sm max-w-2xl mx-auto">
+                    <div className="w-20 h-20 bg-electro-bg rounded-full flex items-center justify-center mx-auto mb-8">
+                        <Info size={40} className="text-electro-dark" />
+                    </div>
+                    <h2 className="text-3xl font-bold text-electro-dark mb-4">Authentication Required</h2>
+                    <p className="text-gray-500 mb-10 leading-relaxed">
+                        Please log in to your account or continue as a guest to view your premium tech deployment history.
+                    </p>
+                    <div className="flex flex-col md:flex-row gap-4 justify-center">
+                        <Link 
+                            to="/login?redirect=/myorders" 
+                            className="bg-electro-yellow text-electro-dark px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs hover:shadow-lg transition-all"
+                        >
+                            Login to Account
+                        </Link>
+                       
+                    </div>
+                </div>
+            </div>
+        );
+    }
     if (loading) return (
         <div className="flex flex-col justify-center items-center py-64 bg-electro-bg h-screen text-center">
             <Loader size={40} className="animate-spin text-electro-yellow mb-4" />
@@ -53,7 +79,7 @@ const MyOrdersPage = () => {
             {/* BREADCRUMB */}
             <div className="border-b border-gray-200 bg-white shadow-sm mb-12">
                 <div className="container-custom py-4 flex items-center gap-2 text-sm text-gray-500">
-                    <Link to="/" className="hover:text-electro-blue transition-colors">Home</Link>
+                    <Link to="/" className="hover:text-black transition-colors">Home</Link>
                     <ChevronRight size={14} />
                     <span className="text-electro-dark font-bold">Order History</span>
                 </div>
@@ -67,7 +93,7 @@ const MyOrdersPage = () => {
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold text-electro-dark tracking-tight">Order History</h1>
                     </div>
-                    <p className="text-sm font-medium text-gray-400 uppercase tracking-widest ml-16">Review and track your premium tech deployments.</p>
+                    <p className="text-sm font-medium text-gray-400 uppercase tracking-widest ml-1">Review and track your premium tech deployments.</p>
                 </header>
 
                 {orders.length === 0 ? (
